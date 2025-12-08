@@ -1,0 +1,58 @@
+<div class="auth-layout">
+  <aside class="sidebar" [class.sidebar--open]="sidebarOpen()">
+    <div class="sidebar__header">
+      <div class="logo">
+        <img src="assets/logos/logosmall.png" alt="HC Platform" class="logo-mark" />
+        <div>
+          <p class="eyebrow">HubCapture</p>
+          <p class="title">HC Platform</p>
+        </div>
+      </div>
+      <button class="close-btn md:hidden" (click)="closeSidebar()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <nav class="sidebar__nav">
+      <a
+        *ngFor="let item of navItems"
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()">
+        <lucide-icon [name]="item.icon" class="size-4 icon-muted"></lucide-icon>
+        <span>{{ item.label }}</span>
+      </a>
+    </nav>
+
+    <div class="sidebar__footer">
+      <div class="user-card" *ngIf="user() as u">
+        <p class="user-name">{{ u.firstName || u.email }}</p>
+        <p class="user-email">{{ u.email }}</p>
+      </div>
+      <button class="btn-secondary w-full" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <div class="content">
+    <header class="content__header">
+      <button class="menu-btn md:hidden" (click)="toggleSidebar()">
+        <span aria-hidden="true">&#9776;</span>
+      </button>
+      <p class="text-night-400">Panel operativo</p>
+      <div class="chips">
+        <span>Automatización</span>
+        <span>Integraciones</span>
+        <span>Alertas</span>
+      </div>
+    </header>
+
+    <main class="content__main">
+      <router-outlet></router-outlet>
+    </main>
+
+    <footer class="content__footer">
+      <p>© {{ user()?.firstName || 'HubCapture' }} Automation. Todos los derechos reservados.</p>
+    </footer>
+  </div>
+</div>

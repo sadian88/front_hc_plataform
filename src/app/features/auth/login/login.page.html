@@ -1,0 +1,73 @@
+<section class="login-wrapper">
+  <div class="login-grid">
+    <article class="login-hero">
+      <img src="assets/logos/logofull.png" alt="HC Platform completo" class="hero-logo" />
+      <div class="hero-pill">
+        <lucide-icon name="shield-check" class="size-5 icon-active"></lucide-icon>
+        HC Platform
+      </div>
+      <h2>Hola, bienvenido.</h2>
+      <p>
+        Administra tus automatizaciones y equipos desde un único panel de control seguro y simple. Visualiza la
+        salud de tus flujos y actúa de inmediato.
+      </p>
+      <div class="hero-footer">
+        <span>Nuevas integraciones conectadas</span>
+        <strong>+12 esta semana</strong>
+      </div>
+    </article>
+
+    <article class="login-card">
+      <div class="login-card__header">
+        <p class="eyebrow">Accede</p>
+        <h3>Bienvenido de nuevo</h3>
+        <p class="subtext">Ingresa tus credenciales para continuar.</p>
+      </div>
+
+      <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-control">
+          <label for="email">Email corporativo</label>
+          <div class="input-wrapper">
+            <lucide-icon name="mail" class="icon-muted"></lucide-icon>
+            <input id="email" type="email" placeholder="tu.nombre@empresa.com" formControlName="email" />
+          </div>
+          <p class="error" *ngIf="getEmailError() as error">{{ error }}</p>
+        </div>
+
+        <div class="form-control">
+          <label for="password">Contraseña</label>
+          <div class="input-wrapper">
+            <lucide-icon name="lock" class="icon-muted"></lucide-icon>
+            <input id="password" type="password" placeholder="••••••••" formControlName="password" />
+          </div>
+          <p class="error" *ngIf="getPasswordError() as error">{{ error }}</p>
+        </div>
+
+        <div class="form-meta">
+          <label class="remember">
+            <input type="checkbox" formControlName="remember" />
+            Recordarme
+          </label>
+          <button type="button">¿Olvidaste tu contraseña?</button>
+        </div>
+
+        <button class="submit-btn" type="submit" [disabled]="loading()">
+          <span *ngIf="!loading(); else loadingTpl">Ingresar</span>
+          <ng-template #loadingTpl>
+            <svg viewBox="0 0 24 24" class="spinner">
+              <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+          </ng-template>
+          <lucide-icon name="arrow-right" class="icon-active"></lucide-icon>
+        </button>
+
+        <div *ngIf="errorMessage()" class="alert alert--error">
+          {{ errorMessage() }}
+        </div>
+        <div *ngIf="successUser()" class="alert alert--success">
+          Bienvenido {{ successUser() }}. Estamos preparando tu experiencia personalizada.
+        </div>
+      </form>
+    </article>
+  </div>
+</section>

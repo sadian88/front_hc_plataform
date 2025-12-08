@@ -1,0 +1,104 @@
+@import 'primeng/resources/themes/lara-dark-indigo/theme.css';
+@import 'primeng/resources/primeng.min.css';
+@import 'primeflex/primeflex.css';
+@import 'primeicons/primeicons.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #f3f4f6;
+    --color-card: #ffffff;
+    --color-card-muted: #f9fafb;
+    --color-border: #e5e7eb;
+    --color-border-soft: #d1d5db;
+    --color-text-strong: #111827;
+    --color-text-main: #1f2937;
+    --color-text-secondary: #4b5563;
+    --color-text-muted: #6b7280;
+    --color-accent: #16a34a;
+    --color-accent-light: #22c55e;
+    --color-accent-dark: #15803d;
+    --color-warning: #facc15;
+  }
+
+  html,
+  body {
+    font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text-main);
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-image: linear-gradient(180deg, #f6f7fb 0%, #f3f4f6 60%, #edf0f5 100%);
+    background-repeat: no-repeat;
+  }
+
+  ::selection {
+    background: var(--color-accent-light);
+    color: var(--color-text-strong);
+  }
+}
+
+@layer components {
+  .glass-card {
+    border-radius: 1.25rem;
+    background: var(--color-card);
+    padding: 2rem;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+  }
+
+  .card-primary {
+    background: var(--color-card);
+  }
+
+  .card-secondary {
+    background: var(--color-card-muted);
+  }
+
+  .btn-primary {
+    border-radius: 9999px;
+    background: var(--color-accent);
+    color: #ffffff;
+    border: none;
+    padding: 0.65rem 1.4rem;
+    font-weight: 600;
+    transition: background 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    background: var(--color-accent-dark);
+  }
+
+  .btn-secondary {
+    border-radius: 9999px;
+    background: #ffffff;
+    color: var(--color-text-main);
+    border: 1px solid var(--color-border);
+    padding: 0.6rem 1.3rem;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-card-muted);
+    border-color: var(--color-border-soft);
+  }
+
+  .icon-active {
+    color: var(--color-accent);
+  }
+
+  .icon-muted {
+    color: var(--color-text-secondary);
+  }
+
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+}

@@ -1,0 +1,135 @@
+:host {
+  display: block;
+}
+
+.company-table {
+  border-radius: 1.5rem;
+  overflow: hidden;
+
+  .p-datatable-header {
+    background: transparent;
+    color: var(--color-text-main);
+    padding: 1rem 0;
+  }
+
+  .p-datatable-thead > tr > th {
+    background: var(--color-card-muted);
+    color: var(--color-text-main);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.9rem 1rem;
+  }
+
+  .p-datatable-tbody > tr > td {
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-main);
+    padding: 0.9rem 1rem;
+  }
+
+  .p-datatable-tbody > tr:last-child > td {
+    border-bottom: none;
+  }
+
+  .p-datatable-tbody > tr.p-selectable-row.p-highlight > td {
+    background: rgba(34, 197, 94, 0.08);
+  }
+
+  .actions-column {
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.1rem 0.75rem;
+  background: rgba(22, 165, 74, 0.12);
+  color: var(--color-accent-dark);
+  font-size: 0.85rem;
+}
+
+.link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(22, 165, 74, 0.3);
+}
+
+.action-btn {
+  border: none;
+  border-radius: 9999px;
+  padding: 0.35rem 0.9rem;
+  margin-left: 0.4rem;
+  font-size: 0.85rem;
+  background: rgba(22, 165, 74, 0.12);
+  color: var(--color-accent-dark);
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: rgba(22, 165, 74, 0.2);
+  }
+
+  &--danger {
+    background: rgba(248, 113, 113, 0.15);
+    color: #b91c1c;
+
+    &:hover {
+      background: rgba(248, 113, 113, 0.25);
+    }
+  }
+}
+
+.form-panel {
+  margin-top: 1rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.form-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
+
+    label {
+      font-size: 0.85rem;
+      color: var(--color-text-main);
+  }
+
+    .input-wrapper {
+      border-radius: 1rem;
+      border: 1px solid var(--color-border);
+      background: #f9fafb;
+    padding: 0.5rem 0.9rem;
+
+      input,
+      textarea {
+        width: 100%;
+        border: none;
+        background: transparent;
+        color: var(--color-text-main);
+      }
+    }
+  }
+.textarea {
+  padding: 0;
+
+  textarea {
+    padding: 0.7rem;
+    resize: vertical;
+  }
+}

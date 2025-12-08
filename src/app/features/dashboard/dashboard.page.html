@@ -1,0 +1,67 @@
+<section class="space-y-6">
+  <header class="glass-card flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+    <div>
+      <p class="text-sm uppercase tracking-wide text-night-500">Panel operativo</p>
+      <h1 class="text-3xl font-semibold text-night-100">Dashboard principal</h1>
+      <p class="text-night-400">Métricas resumidas del estado de tus automatizaciones.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="rounded-2xl border border-night-700 px-4 py-2 text-sm text-night-100 hover:bg-night-900/60">
+        Exportar
+      </button>
+      <button class="rounded-2xl bg-night-700 px-4 py-2 text-sm font-semibold text-night-100 hover:bg-night-600">
+        Nueva alerta
+      </button>
+    </div>
+  </header>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <article
+      *ngFor="let card of cards"
+      class="metric-card rounded-3xl border border-night-800/80 bg-night-900/40 p-5 shadow-soft-card">
+      <p class="text-sm text-night-500">{{ card.label }}</p>
+      <p class="mt-2 text-3xl font-semibold text-night-100">{{ card.value }}</p>
+      <p class="text-sm text-night-400">{{ card.change }}</p>
+    </article>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+    <article class="glass-card space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-night-100">Actividad reciente</h2>
+        <button class="text-sm text-night-400 hover:text-night-100">Ver todo</button>
+      </div>
+      <div class="space-y-3">
+        <div
+          *ngFor="let activity of activities"
+          class="flex items-center justify-between rounded-2xl border border-night-800/70 bg-night-900/40 px-4 py-3">
+          <div>
+            <p class="font-medium text-night-100">{{ activity.title }}</p>
+            <p class="text-sm text-night-500">{{ activity.time }}</p>
+          </div>
+          <span
+            class="rounded-full px-3 py-1 text-xs font-semibold"
+            [ngClass]="{
+              'status-chip--ok text-emerald-200': activity.status === 'ok',
+              'status-chip--warn text-amber-200': activity.status === 'warn'
+            }">
+            {{ activity.status === 'ok' ? 'OK' : 'Atención' }}
+          </span>
+        </div>
+      </div>
+    </article>
+
+    <article class="glass-card space-y-4">
+      <h2 class="text-xl font-semibold text-night-100">Highlights</h2>
+      <div class="space-y-4">
+        <div
+          *ngFor="let item of highlights"
+          class="rounded-2xl border border-night-800/70 bg-night-900/40 p-4">
+          <p class="text-sm text-night-500">{{ item.title }}</p>
+          <p class="mt-1 text-3xl font-semibold text-night-100">{{ item.value }}</p>
+          <p class="text-sm text-night-400">{{ item.detail }}</p>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

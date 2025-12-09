@@ -9,7 +9,8 @@ const {
   Activity,
   Users,
   Bell,
-  Settings
+  Settings,
+  Search
 } = icons;
 
 export const lucideCoreIcons = {
@@ -21,5 +22,6 @@ export const lucideCoreIcons = {
   Activity,
   Users,
   Bell,
-  Settings
+  Settings,
+  Search
 };

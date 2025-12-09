@@ -38,3 +38,21 @@
   background: rgba(250, 204, 21, 0.15);
   color: #92400e;
 }
+
+.chart-wrapper {
+  max-width: 320px;
+  margin: auto;
+
+  canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+
+.insight-card {
+  border: 1px solid var(--color-border);
+  border-radius: 1.5rem;
+  padding: 1.25rem;
+  background: var(--color-card-muted);
+  box-shadow: 0 15px 25px rgba(15, 23, 42, 0.06);
+}

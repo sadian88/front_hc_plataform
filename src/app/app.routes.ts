@@ -32,6 +32,18 @@ export const routes: Routes = [
         path: 'companies',
         loadComponent: () =>
           import('./features/companies/companies.page').then((m) => m.CompaniesPageComponent)
+      },
+      {
+        path: 'leads',
+        loadComponent: () =>
+          import('./features/leads/leads.page').then((m) => m.LeadsPageComponent)
+      },
+      {
+        path: 'search-results',
+        loadComponent: () =>
+          import('./features/search-results/search-results.page').then(
+            (m) => m.SearchResultsPageComponent
+          )
       }
     ]
   },

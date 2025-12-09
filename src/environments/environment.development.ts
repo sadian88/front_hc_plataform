@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://hcplatform-api-hc.aklev4.easypanel.host/api/v1'
+  apiBaseUrl: 'http://localhost:4000/api/v1'
 };

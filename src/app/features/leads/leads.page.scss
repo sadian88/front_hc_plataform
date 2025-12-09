@@ -1,0 +1,194 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep .lead-table {
+  border-radius: 1.5rem;
+  overflow: hidden;
+
+  .p-datatable-header {
+    background: transparent;
+    color: var(--color-text-main);
+    padding: 1rem 0;
+  }
+
+  .p-datatable-thead > tr > th {
+    background: var(--color-card-muted);
+    color: var(--color-text-main);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.9rem 1rem;
+  }
+
+  .p-datatable-tbody > tr > td {
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-main);
+    padding: 0.9rem 1rem;
+    vertical-align: top;
+  }
+
+  .p-datatable-tbody > tr:last-child > td {
+    border-bottom: none;
+  }
+
+  .actions-column {
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+.table-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+
+  .control-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 180px;
+
+    label {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+    }
+
+    input,
+    select {
+      border-radius: 0.8rem;
+      border: 1px solid var(--color-border);
+      padding: 0.45rem 0.75rem;
+      background: #fff;
+      color: var(--color-text-main);
+    }
+  }
+
+  .control-field.grow {
+    flex: 1;
+    min-width: 220px;
+  }
+}
+
+.clear-filters {
+  margin-left: auto;
+  align-self: flex-end;
+  white-space: nowrap;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.75rem;
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+}
+
+.link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(22, 165, 74, 0.3);
+}
+
+.action-btn {
+  border: none;
+  border-radius: 9999px;
+  padding: 0.35rem 0.9rem;
+  margin-left: 0.4rem;
+  font-size: 0.85rem;
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: rgba(59, 130, 246, 0.2);
+  }
+
+  &--danger {
+    background: rgba(248, 113, 113, 0.15);
+    color: #b91c1c;
+
+    &:hover {
+      background: rgba(248, 113, 113, 0.25);
+    }
+  }
+}
+
+.form-panel {
+  margin-top: 1.5rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.lead-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.form-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    font-size: 0.85rem;
+    color: var(--color-text-main);
+  }
+
+  .input-wrapper {
+    border-radius: 1rem;
+    border: 1px solid var(--color-border);
+    background: #f9fafb;
+    padding: 0.5rem 0.9rem;
+
+    input,
+    textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--color-text-main);
+    }
+  }
+
+  &.textarea .input-wrapper {
+    padding: 0;
+
+    textarea {
+      padding: 0.7rem;
+      resize: vertical;
+    }
+  }
+}
+
+.helper-text {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}

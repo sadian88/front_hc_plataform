@@ -2,7 +2,7 @@
   display: block;
 }
 
-.company-table {
+:host ::ng-deep .company-table {
   border-radius: 1.5rem;
   overflow: hidden;
 

@@ -25,43 +25,82 @@
     </article>
   </div>
 
-  <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+  <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
     <article class="glass-card space-y-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-night-100">Actividad reciente</h2>
-        <button class="text-sm text-night-400 hover:text-night-100">Ver todo</button>
+        <h2 class="text-xl font-semibold text-night-100">Leads recientes</h2>
+        <span class="text-sm text-night-500">{{ recentLeads().length }} registros</span>
       </div>
-      <div class="space-y-3">
+      <div class="space-y-3" *ngIf="recentLeads().length; else emptyLeads">
         <div
-          *ngFor="let activity of activities"
+          *ngFor="let lead of recentLeads(); trackBy: trackLead"
           class="flex items-center justify-between rounded-2xl border border-night-800/70 bg-night-900/40 px-4 py-3">
           <div>
-            <p class="font-medium text-night-100">{{ activity.title }}</p>
-            <p class="text-sm text-night-500">{{ activity.time }}</p>
+            <p class="font-medium text-night-100">{{ lead.nombre || 'Sin nombre' }}</p>
+            <p class="text-sm text-night-500">
+              {{ lead.company_name || 'Sin compañía' }} · {{ lead.cargo || 'Sin cargo' }}
+            </p>
           </div>
-          <span
-            class="rounded-full px-3 py-1 text-xs font-semibold"
-            [ngClass]="{
-              'status-chip--ok text-emerald-200': activity.status === 'ok',
-              'status-chip--warn text-amber-200': activity.status === 'warn'
-            }">
-            {{ activity.status === 'ok' ? 'OK' : 'Atención' }}
-          </span>
+          <p class="text-sm text-night-400">
+            {{ lead.updated_at ? (lead.updated_at | date: 'short') : 'Sin fecha' }}
+          </p>
         </div>
       </div>
+      <ng-template #emptyLeads>
+        <p class="text-sm text-night-400">No hay leads registrados aún.</p>
+      </ng-template>
     </article>
 
     <article class="glass-card space-y-4">
-      <h2 class="text-xl font-semibold text-night-100">Highlights</h2>
-      <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-night-100">Top compañías por scraping</h2>
+        <span class="text-sm text-night-500">{{ topCompanies().length }} compañías</span>
+      </div>
+      <div class="space-y-4" *ngIf="topCompanies().length; else emptyCompanies">
         <div
-          *ngFor="let item of highlights"
+          *ngFor="let company of topCompanies(); trackBy: trackCompany"
           class="rounded-2xl border border-night-800/70 bg-night-900/40 p-4">
-          <p class="text-sm text-night-500">{{ item.title }}</p>
-          <p class="mt-1 text-3xl font-semibold text-night-100">{{ item.value }}</p>
-          <p class="text-sm text-night-400">{{ item.detail }}</p>
+          <p class="text-sm text-night-500">ID {{ company.id }}</p>
+          <p class="mt-1 text-2xl font-semibold text-night-100">{{ company.company_name }}</p>
+          <p class="text-sm text-night-400">
+            {{ company.search_results }} resultados detectados
+          </p>
         </div>
       </div>
+      <ng-template #emptyCompanies>
+        <p class="text-sm text-night-400">Aún no hay resultados de scraping.</p>
+      </ng-template>
     </article>
   </div>
+
+  <article class="glass-card space-y-4">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-semibold text-night-100">Distribución</h2>
+      <span class="text-sm text-night-500">Consolidado actual</span>
+    </div>
+    <div class="grid gap-6 lg:grid-cols-[1fr_1.2fr] items-center">
+      <div class="chart-wrapper" *ngIf="leadChartData(); else emptyChart">
+        <p-chart type="doughnut" [data]="leadChartData()"></p-chart>
+      </div>
+      <ng-template #emptyChart>
+        <p class="text-sm text-night-400">Sin datos para graficar.</p>
+      </ng-template>
+      <div class="flex flex-col gap-4">
+        <div class="insight-card">
+          <p class="text-sm text-night-500">Leads vs resultados</p>
+          <p class="text-2xl font-semibold text-night-100">
+            {{ data()?.summary?.leads || 0 }} / {{ data()?.summary?.searchResults || 0 }}
+          </p>
+          <p class="text-sm text-night-400">Leads registrados y scrapings detectados.</p>
+        </div>
+        <div class="insight-card">
+          <p class="text-sm text-night-500">Última actualización</p>
+          <p class="text-lg font-semibold text-night-100">
+            {{ data()?.summary?.latestLeadUpdate ? (data()?.summary?.latestLeadUpdate | date: 'mediumDate') : 'Sin dato' }}
+          </p>
+          <p class="text-sm text-night-400">Basado en los registros más recientes.</p>
+        </div>
+      </div>
+    </div>
+  </article>
 </section>

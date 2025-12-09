@@ -17,7 +17,9 @@ export class AuthShellComponent {
 
   readonly navItems = [
     { icon: 'layout-dashboard', label: 'Dashboard', path: '/app/dashboard' },
-    { icon: 'shield-check', label: 'Compañías', path: '/app/companies' }
+    { icon: 'shield-check', label: 'Compañías', path: '/app/companies' },
+    { icon: 'users', label: 'Leads', path: '/app/leads' },
+    { icon: 'search', label: 'Search Results', path: '/app/search-results' }
   ];
 
   readonly user = computed(() => this.authState.session()?.user);

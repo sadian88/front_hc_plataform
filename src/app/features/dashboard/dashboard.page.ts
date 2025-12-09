@@ -1,62 +1,83 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
-
-interface CardMetric {
-  label: string;
-  value: string;
-  change: string;
-}
-
-interface ActivityItem {
-  title: string;
-  time: string;
-  status: 'ok' | 'warn';
-}
+import { ChartModule } from 'primeng/chart';
+import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, ChartModule],
   templateUrl: './dashboard.page.html',
   styleUrl: './dashboard.page.scss'
 })
-export class DashboardPageComponent {
-  readonly cards: CardMetric[] = [
-    { label: 'Bots activos', value: '32', change: '+4 desde ayer' },
-    { label: 'Automatizaciones hoy', value: '184', change: '+8% semanal' },
-    { label: 'Incidentes abiertos', value: '3', change: '2 críticos' }
-  ];
+export class DashboardPageComponent implements OnInit {
+  private readonly dashboardService = inject(DashboardService);
 
-  readonly activities: ActivityItem[] = [
-    {
-      title: 'Sincronización ERP finalizada',
-      time: 'Hace 8 min',
-      status: 'ok'
-    },
-    {
-      title: 'Cola de documentos pendiente',
-      time: 'Hace 16 min',
-      status: 'warn'
-    },
-    {
-      title: 'Bot de facturación reiniciado',
-      time: 'Hace 1 h',
-      status: 'ok'
+  readonly data = this.dashboardService.data;
+  readonly loading = this.dashboardService.loading;
+  readonly leadChartData = computed(() => {
+    const summary = this.data()?.summary;
+    if (!summary) {
+      return null;
     }
-  ];
 
-  readonly highlights = [
-    {
-      title: 'Eficiencia semanal',
-      value: '92%',
-      detail: 'Meta alcanzada 4/5 días'
-    },
-    {
-      title: 'Tickets resueltos',
-      value: '48',
-      detail: 'Promedio 3m por ticket'
-    }
-  ];
+    return {
+      labels: ['Leads', 'Scrapings'],
+      datasets: [
+        {
+          data: [summary.leads, summary.searchResults],
+          backgroundColor: ['#16a34a', '#0ea5e9'],
+          hoverBackgroundColor: ['#22c55e', '#38bdf8']
+        }
+      ]
+    };
+  });
 
+  ngOnInit(): void {
+    this.dashboardService.load().subscribe();
+  }
+
+  get cards() {
+    const summary = this.data()?.summary;
+    return [
+      {
+        label: 'Compañías registradas',
+        value: summary ? summary.companies.toString() : '--',
+        change: summary?.latestSearchUpdate
+          ? `Último scraping ${new Date(summary.latestSearchUpdate).toLocaleDateString()}`
+          : 'Sin registros'
+      },
+      {
+        label: 'Leads activos',
+        value: summary ? summary.leads.toString() : '--',
+        change: summary?.latestLeadUpdate
+          ? `Actualizado ${new Date(summary.latestLeadUpdate).toLocaleDateString()}`
+          : 'Sin registros'
+      },
+      {
+        label: 'Resultados de búsqueda',
+        value: summary ? summary.searchResults.toString() : '--',
+        change: summary?.latestSearchUpdate
+          ? `Última fuente ${new Date(summary.latestSearchUpdate).toLocaleDateString()}`
+          : 'Sin registros'
+      }
+    ];
+  }
+
+  recentLeads() {
+    return this.data()?.recentLeads || [];
+  }
+
+  topCompanies() {
+    return this.data()?.topCompanies || [];
+  }
+
+  trackLead(index: number, item: any) {
+    return item?.id_lead || index;
+  }
+
+  trackCompany(index: number, item: any) {
+    return item?.id || index;
+  }
 }

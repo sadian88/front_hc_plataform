@@ -1,0 +1,192 @@
+<section class="space-y-6">
+  <header class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <p class="text-sm uppercase tracking-wide text-night-500">Resultados</p>
+      <h1 class="text-3xl font-semibold text-night-100">Search Results</h1>
+      <p class="text-night-400">{{ statusMessage() }}</p>
+    </div>
+    <button class="btn-secondary" type="button" (click)="refresh()">Refrescar lista</button>
+  </header>
+
+  <article class="glass-card card-primary space-y-4">
+    <div class="table-controls">
+      <div class="control-field grow">
+        <label for="searchFilter">Buscar</label>
+        <input
+          id="searchFilter"
+          type="search"
+          placeholder="Título, link, fuente..."
+          [value]="searchTerm()"
+          (input)="onSearchInput($event)" />
+      </div>
+      <div class="control-field">
+        <label for="companyFilter">Source_Scraping</label>
+        <select
+          id="companyFilter"
+          [value]="companyFilter()"
+          (change)="onCompanyFilterChange($event)">
+          <option value="">Todas</option>
+          <option *ngFor="let company of companyOptions()" [value]="company">
+            {{ company }}
+          </option>
+        </select>
+      </div>
+      <div class="control-field">
+        <label for="sourceFilter">Fuente</label>
+        <select
+          id="sourceFilter"
+          [value]="sourceFilter()"
+          (change)="onSourceFilterChange($event)">
+          <option value="">Todas</option>
+          <option *ngFor="let source of sourceOptions()" [value]="source">
+            {{ source }}
+          </option>
+        </select>
+      </div>
+      <button
+        type="button"
+        class="btn-secondary clear-filters"
+        (click)="clearFilters()"
+        [disabled]="!hasActiveFilters()">
+        Limpiar filtros
+      </button>
+    </div>
+
+    <p-table
+      #resultsTable
+      class="results-table"
+      [value]="tableRows()"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [showCurrentPageReport]="true"
+      [globalFilterFields]="[
+        'companyLabel',
+        'title',
+        'link',
+        'redirect_link',
+        'displayed_link',
+        'displaySource'
+      ]"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+      responsiveLayout="scroll"
+      dataKey="link_key">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Source_Scraping</th>
+          <th>Resultado</th>
+          <th>Link</th>
+          <th>Redirect</th>
+          <th>Fuente</th>
+          <th class="actions-column">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-result>
+        <tr>
+          <td>
+            <div class="flex flex-col gap-1">
+              <span class="font-semibold text-night-100">{{ result.companyLabel }}</span>
+              <small class="text-night-500">ID #{{ result.company_id }}</small>
+            </div>
+          </td>
+          <td>
+            <div class="flex flex-col gap-1">
+              <span class="font-semibold text-night-100">{{ result.title || 'Sin título' }}</span>
+              <small class="text-night-500" *ngIf="result.displayed_link">
+                {{ result.displayed_link }}
+              </small>
+            </div>
+          </td>
+          <td>
+            <a class="link" [href]="result.link" target="_blank" rel="noopener">
+              {{ result.link }}
+            </a>
+          </td>
+          <td>
+            <a
+              class="link"
+              *ngIf="result.redirect_link"
+              [href]="result.redirect_link"
+              target="_blank"
+              rel="noopener">
+              {{ result.redirect_link }}
+            </a>
+            <span class="text-secondary" *ngIf="!result.redirect_link">Sin URL</span>
+          </td>
+          <td>
+            <span>{{ result.displaySource }}</span>
+          </td>
+          <td class="actions-column">
+            <button type="button" class="action-btn" (click)="startEdit(result)">Editar</button>
+            <button
+              type="button"
+              class="action-btn action-btn--danger"
+              (click)="deleteResult(result)">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </article>
+</section>
+
+<article *ngIf="showForm()" class="glass-card card-secondary form-panel">
+  <div class="form-panel__header">
+    <h2 class="text-xl font-semibold text-night-100">Editar resultado</h2>
+    <button class="btn-secondary" type="button" (click)="resetForm()">Cerrar</button>
+  </div>
+
+  <form class="results-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+      <div class="form-control">
+        <label for="title">Título</label>
+        <div class="input-wrapper">
+          <input id="title" type="text" placeholder="Título del resultado" formControlName="title" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="displayedLink">Displayed Link</label>
+        <div class="input-wrapper">
+          <input
+            id="displayedLink"
+            type="text"
+            placeholder="www.empresa.com"
+            formControlName="displayedLink" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="redirectLink">Redirect Link</label>
+        <div class="input-wrapper">
+          <input
+            id="redirectLink"
+            type="url"
+            placeholder="https://redirect.com"
+            formControlName="redirectLink" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="source">Fuente</label>
+        <div class="input-wrapper">
+          <input id="source" type="text" placeholder="Google" formControlName="source" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-control">
+      <label>Link original</label>
+      <div class="input-wrapper">
+        <input type="text" [value]="selectedLink()" readonly />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="form.invalid">Guardar cambios</button>
+      <button type="button" class="btn-secondary" (click)="resetForm()">Cancelar</button>
+    </div>
+  </form>
+</article>

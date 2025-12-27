@@ -34,12 +34,17 @@ export const routes: Routes = [
           import('./features/companies/companies.page').then((m) => m.CompaniesPageComponent)
       },
       {
-        path: 'leads',
+        path: 'user-interactions',
         loadComponent: () =>
           import('./features/leads/leads.page').then((m) => m.LeadsPageComponent)
       },
       {
-        path: 'search-results',
+        path: 'lead-prospecto',
+        loadComponent: () =>
+          import('./features/prospects/prospects.page').then((m) => m.ProspectsPageComponent)
+      },
+      {
+        path: 'company-prospectos',
         loadComponent: () =>
           import('./features/search-results/search-results.page').then(
             (m) => m.SearchResultsPageComponent

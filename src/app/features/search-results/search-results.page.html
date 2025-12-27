@@ -2,13 +2,22 @@
   <header class="flex flex-wrap items-center justify-between gap-4">
     <div>
       <p class="text-sm uppercase tracking-wide text-night-500">Resultados</p>
-      <h1 class="text-3xl font-semibold text-night-100">Search Results</h1>
+      <h1 class="text-3xl font-semibold text-night-100">Company_Prospectos</h1>
       <p class="text-night-400">{{ statusMessage() }}</p>
     </div>
     <button class="btn-secondary" type="button" (click)="refresh()">Refrescar lista</button>
   </header>
 
   <article class="glass-card card-primary space-y-4">
+    <div *ngIf="hasServerFilter()" class="server-filter-banner">
+      <span>
+        Filtrando por <strong>source_scraping</strong> = {{ sourceScrapingFilter() }}
+      </span>
+      <button type="button" class="btn-secondary" (click)="clearSourceScrapingFilter()">
+        Ver todos
+      </button>
+    </div>
+
     <div class="table-controls">
       <div class="control-field grow">
         <label for="searchFilter">Buscar</label>
@@ -67,7 +76,8 @@
         'link',
         'redirect_link',
         'displayed_link',
-        'displaySource'
+        'displaySource',
+        'sourceScraping'
       ]"
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
       responsiveLayout="scroll"
@@ -86,8 +96,12 @@
         <tr>
           <td>
             <div class="flex flex-col gap-1">
-              <span class="font-semibold text-night-100">{{ result.companyLabel }}</span>
-              <small class="text-night-500">ID #{{ result.company_id }}</small>
+              <span class="font-semibold text-night-100">
+                {{ result.sourceScraping || 'Sin dato' }}
+              </span>
+              <small class="text-night-500">
+                {{ result.companyLabel }} · ID #{{ result.company_id }}
+              </small>
             </div>
           </td>
           <td>

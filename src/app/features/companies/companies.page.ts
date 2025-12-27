@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { finalize } from 'rxjs';
 import { TableModule } from 'primeng/table';
@@ -20,6 +21,7 @@ import {
 export class CompaniesPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly companyService = inject(CompanyService);
+  private readonly router = inject(Router);
 
   readonly companies = this.companyService.companies;
   readonly loading = this.companyService.loading;
@@ -98,6 +100,18 @@ export class CompaniesPageComponent implements OnInit {
         }
       },
       error: () => this.statusMessage.set('No se pudo eliminar el registro.')
+    });
+  }
+
+  viewUserInteractions(company: Company): void {
+    this.router.navigate(['/app/user-interactions'], {
+      queryParams: { sourceScraping: company.id }
+    });
+  }
+
+  viewCompanyProspectos(company: Company): void {
+    this.router.navigate(['/app/company-prospectos'], {
+      queryParams: { sourceScraping: company.id }
     });
   }
 

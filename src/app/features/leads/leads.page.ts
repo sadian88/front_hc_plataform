@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject, signal, DestroyRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { TableModule, Table } from 'primeng/table';
 import { LeadService, Lead, LeadPayload } from '../../core/services/lead.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 type LeadRow = Lead & {
   sourceCompany: string;
   prospectCompany: string;
   displayCountry: string;
+  sourceScraping: string;
 };
 
 @Component({
@@ -21,6 +24,9 @@ type LeadRow = Lead & {
 export class LeadsPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly leadService = inject(LeadService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   @ViewChild('leadTable') leadTable?: Table;
 
   readonly leads = this.leadService.leads;
@@ -30,14 +36,15 @@ export class LeadsPageComponent implements OnInit {
       ...lead,
       sourceCompany: (lead.company_name || '').trim(),
       prospectCompany: (lead.empresa || '').trim(),
-      displayCountry: (lead.pais || '').trim()
+      displayCountry: (lead.pais || '').trim(),
+      sourceScraping: this.formatSourceScraping(lead.source_scraping)
     }))
   );
   readonly searchTerm = signal('');
   readonly companyFilter = signal('');
   readonly countryFilter = signal('');
   readonly editingId = signal<string | null>(null);
-  readonly statusMessage = signal('Consulta y administra los leads existentes.');
+  readonly statusMessage = signal('Consulta y administra las User Interactions existentes.');
   readonly showForm = signal(false);
   readonly companyOptions = computed(() =>
     Array.from(
@@ -60,6 +67,8 @@ export class LeadsPageComponent implements OnInit {
   readonly hasActiveFilters = computed(
     () => !!(this.searchTerm() || this.companyFilter() || this.countryFilter())
   );
+  readonly sourceScrapingFilter = signal<string | null>(null);
+  readonly hasServerFilter = computed(() => !!this.sourceScrapingFilter());
 
   readonly form = this.fb.nonNullable.group({
     nombre: ['', [Validators.required]],
@@ -82,7 +91,11 @@ export class LeadsPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.refresh();
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const value = (params.get('sourceScraping') || '').trim();
+      this.sourceScrapingFilter.set(value.length ? value : null);
+      this.refresh();
+    });
   }
 
   onSearchInput(event: Event): void {
@@ -119,9 +132,17 @@ export class LeadsPageComponent implements OnInit {
   }
 
   refresh(): void {
-    this.leadService.loadAll().subscribe({
-      next: () => this.statusMessage.set('Leads actualizados.'),
-      error: () => this.statusMessage.set('No fue posible cargar los leads.')
+    const serverFilter = this.sourceScrapingFilter();
+    this.leadService
+      .loadAll(serverFilter ? { sourceScraping: serverFilter } : undefined)
+      .subscribe({
+        next: () =>
+          this.statusMessage.set(
+            serverFilter
+              ? `User Interactions filtradas por source_scraping ${serverFilter}.`
+              : 'User Interactions actualizadas.'
+          ),
+      error: () => this.statusMessage.set('No fue posible cargar las User Interactions.')
     });
   }
 
@@ -151,6 +172,14 @@ export class LeadsPageComponent implements OnInit {
     this.showForm.set(true);
   }
 
+  clearSourceScrapingFilter(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { sourceScraping: null },
+      queryParamsHandling: 'merge'
+    });
+  }
+
   onSubmit(): void {
     if (!this.editingId()) {
       return;
@@ -170,22 +199,22 @@ export class LeadsPageComponent implements OnInit {
       .pipe(finalize(() => this.form.enable()))
       .subscribe({
         next: () => {
-          this.statusMessage.set('Lead actualizado correctamente.');
+          this.statusMessage.set('User Interaction actualizada correctamente.');
           this.resetForm();
         },
-        error: () => this.statusMessage.set('No se pudo actualizar el lead.')
+        error: () => this.statusMessage.set('No se pudo actualizar la User Interaction.')
       });
   }
 
   deleteLead(lead: Lead): void {
     this.leadService.remove(lead.id_lead).subscribe({
       next: () => {
-        this.statusMessage.set('Lead eliminado.');
+        this.statusMessage.set('User Interaction eliminada.');
         if (this.editingId() === lead.id_lead) {
           this.resetForm();
         }
       },
-      error: () => this.statusMessage.set('No se pudo eliminar el lead.')
+      error: () => this.statusMessage.set('No se pudo eliminar la User Interaction.')
     });
   }
 
@@ -271,5 +300,13 @@ export class LeadsPageComponent implements OnInit {
     }
 
     return value.join('\n');
+  }
+
+  private formatSourceScraping(value: string | number | null | undefined): string {
+    if (value === null || value === undefined) {
+      return '';
+    }
+
+    return String(value).trim();
   }
 }

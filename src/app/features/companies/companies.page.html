@@ -54,6 +54,12 @@
           </td>
           <td>{{ company.creation_date || 'N/A' }}</td>
           <td class="actions-column">
+            <button type="button" class="action-btn" (click)="viewUserInteractions(company)">
+              Ver User Interactions
+            </button>
+            <button type="button" class="action-btn" (click)="viewCompanyProspectos(company)">
+              Ver Company_Prospectos
+            </button>
             <button type="button" class="action-btn" (click)="startEdit(company)">Editar</button>
             <button type="button" class="action-btn action-btn--danger" (click)="deleteCompany(company)">
               Eliminar

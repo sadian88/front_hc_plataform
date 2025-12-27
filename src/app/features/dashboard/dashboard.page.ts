@@ -23,7 +23,7 @@ export class DashboardPageComponent implements OnInit {
     }
 
     return {
-      labels: ['Leads', 'Scrapings'],
+      labels: ['User Interactions', 'Scrapings'],
       datasets: [
         {
           data: [summary.leads, summary.searchResults],
@@ -49,7 +49,7 @@ export class DashboardPageComponent implements OnInit {
           : 'Sin registros'
       },
       {
-        label: 'Leads activos',
+        label: 'User Interactions activas',
         value: summary ? summary.leads.toString() : '--',
         change: summary?.latestLeadUpdate
           ? `Actualizado ${new Date(summary.latestLeadUpdate).toLocaleDateString()}`

@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { finalize, Observable, tap } from 'rxjs';
 
@@ -8,6 +8,7 @@ export interface SearchResult {
   company_name?: string | null;
   link: string;
   link_key: string;
+  source_scraping?: string | number | null;
   title?: string | null;
   redirect_link?: string | null;
   displayed_link?: string | null;
@@ -38,9 +39,15 @@ export class SearchResultService {
   readonly results = this.resultsSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
 
-  loadAll(): Observable<ApiResponse<SearchResult[]>> {
+  loadAll(filters?: { sourceScraping?: string | number | null }): Observable<ApiResponse<SearchResult[]>> {
     this.loadingSignal.set(true);
-    return this.http.get<ApiResponse<SearchResult[]>>(this.baseUrl).pipe(
+    let params = new HttpParams();
+    const sourceScraping = filters?.sourceScraping;
+    if (sourceScraping !== undefined && sourceScraping !== null && sourceScraping !== '') {
+      params = params.set('sourceScraping', String(sourceScraping));
+    }
+
+    return this.http.get<ApiResponse<SearchResult[]>>(this.baseUrl, { params }).pipe(
       tap((res) => this.resultsSignal.set(res.data)),
       finalize(() => this.loadingSignal.set(false))
     );

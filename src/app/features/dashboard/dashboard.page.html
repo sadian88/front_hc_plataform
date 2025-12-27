@@ -28,7 +28,7 @@
   <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
     <article class="glass-card space-y-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-night-100">Leads recientes</h2>
+        <h2 class="text-xl font-semibold text-night-100">User Interactions recientes</h2>
         <span class="text-sm text-night-500">{{ recentLeads().length }} registros</span>
       </div>
       <div class="space-y-3" *ngIf="recentLeads().length; else emptyLeads">
@@ -47,7 +47,7 @@
         </div>
       </div>
       <ng-template #emptyLeads>
-        <p class="text-sm text-night-400">No hay leads registrados aún.</p>
+        <p class="text-sm text-night-400">No hay User Interactions registradas aún.</p>
       </ng-template>
     </article>
 
@@ -87,11 +87,13 @@
       </ng-template>
       <div class="flex flex-col gap-4">
         <div class="insight-card">
-          <p class="text-sm text-night-500">Leads vs resultados</p>
+          <p class="text-sm text-night-500">User Interactions vs resultados</p>
           <p class="text-2xl font-semibold text-night-100">
             {{ data()?.summary?.leads || 0 }} / {{ data()?.summary?.searchResults || 0 }}
           </p>
-          <p class="text-sm text-night-400">Leads registrados y scrapings detectados.</p>
+          <p class="text-sm text-night-400">
+            User Interactions registradas y scrapings detectados.
+          </p>
         </div>
         <div class="insight-card">
           <p class="text-sm text-night-500">Última actualización</p>

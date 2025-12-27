@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { finalize, Observable, tap } from 'rxjs';
 import { AuthStateService } from '../state/auth-state.service';
@@ -8,6 +8,7 @@ export interface Lead {
   id_lead: string;
   company_id?: number | null;
   company_name?: string | null;
+  source_scraping?: string | number | null;
   nombre?: string | null;
   cargo?: string | null;
   seniority?: string | null;
@@ -66,9 +67,15 @@ export class LeadService {
   readonly leads = this.leadsSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
 
-  loadAll(): Observable<ApiResponse<Lead[]>> {
+  loadAll(filters?: { sourceScraping?: string | number | null }): Observable<ApiResponse<Lead[]>> {
     this.loadingSignal.set(true);
-    return this.http.get<ApiResponse<Lead[]>>(this.baseUrl, { headers: this.buildAuthHeaders() }).pipe(
+    const params = this.buildQueryParams(filters);
+    return this.http
+      .get<ApiResponse<Lead[]>>(this.baseUrl, {
+        headers: this.buildAuthHeaders(),
+        params
+      })
+      .pipe(
       tap((res) => this.leadsSignal.set(res.data)),
       finalize(() => this.loadingSignal.set(false))
     );
@@ -95,5 +102,14 @@ export class LeadService {
   private buildAuthHeaders(): HttpHeaders | undefined {
     const token = this.authState.session()?.sessionToken;
     return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+  }
+
+  private buildQueryParams(filters?: { sourceScraping?: string | number | null }): HttpParams {
+    let params = new HttpParams();
+    const sourceScraping = filters?.sourceScraping;
+    if (sourceScraping !== undefined && sourceScraping !== null && sourceScraping !== '') {
+      params = params.set('sourceScraping', String(sourceScraping));
+    }
+    return params;
   }
 }

@@ -2,13 +2,22 @@
   <header class="flex flex-wrap items-center justify-between gap-4">
     <div>
       <p class="text-sm uppercase tracking-wide text-night-500">Pipeline</p>
-      <h1 class="text-3xl font-semibold text-night-100">Leads</h1>
+      <h1 class="text-3xl font-semibold text-night-100">User Interactions</h1>
       <p class="text-night-400">{{ statusMessage() }}</p>
     </div>
     <button class="btn-secondary" type="button" (click)="refresh()">Refrescar lista</button>
   </header>
 
   <article class="glass-card card-primary space-y-4">
+    <div *ngIf="hasServerFilter()" class="server-filter-banner">
+      <span>
+        Filtrando por <strong>source_scraping</strong> = {{ sourceScrapingFilter() }}
+      </span>
+      <button type="button" class="btn-secondary" (click)="clearSourceScrapingFilter()">
+        Ver todos
+      </button>
+    </div>
+
     <div class="table-controls">
       <div class="control-field grow">
         <label for="searchFilter">Buscar</label>
@@ -65,6 +74,7 @@
         'nombre',
         'cargo',
         'sourceCompany',
+        'sourceScraping',
         'prospectCompany',
         'displayCountry',
         'rol_funcional',
@@ -77,7 +87,7 @@
       <ng-template pTemplate="header">
         <tr>
           <th>Actualización</th>
-          <th>Lead</th>
+          <th>User Interaction</th>
           <th>Source_Scraping</th>
           <th>Empresa</th>
           <th>Ubicacion</th>
@@ -109,7 +119,7 @@
             </div>
           </td>
           <td>
-            <span>{{ lead.sourceCompany || 'Sin dato' }}</span>
+            <span>{{ lead.sourceScraping || 'Sin dato' }}</span>
           </td>
           <td>
             <div class="flex flex-col gap-1">
@@ -155,7 +165,7 @@
 
 <article *ngIf="showForm()" class="glass-card card-secondary form-panel">
   <div class="form-panel__header">
-    <h2 class="text-xl font-semibold text-night-100">Editar lead</h2>
+    <h2 class="text-xl font-semibold text-night-100">Editar User Interaction</h2>
     <button class="btn-secondary" type="button" (click)="resetForm()">Cerrar</button>
   </div>
 

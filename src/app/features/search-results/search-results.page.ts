@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject, signal, DestroyRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { TableModule, Table } from 'primeng/table';
 import {
@@ -8,6 +9,7 @@ import {
   SearchResult,
   SearchResultPayload
 } from '../../core/services/search-result.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 interface EditingKey {
   companyId: number;
@@ -24,6 +26,9 @@ interface EditingKey {
 export class SearchResultsPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly searchResultService = inject(SearchResultService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   @ViewChild('resultsTable') resultsTable?: Table;
 
   readonly results = this.searchResultService.results;
@@ -31,6 +36,7 @@ export class SearchResultsPageComponent implements OnInit {
   readonly tableRows = computed(() =>
     this.results().map((result) => ({
       ...result,
+      sourceScraping: this.formatSourceScraping(result.source_scraping),
       companyLabel: result.company_name
         ? `${result.company_name}`
         : `ID ${result.company_id}`,
@@ -40,7 +46,7 @@ export class SearchResultsPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly companyFilter = signal('');
   readonly sourceFilter = signal('');
-  readonly statusMessage = signal('Consulta resultados de scraping corporativo.');
+  readonly statusMessage = signal('Consulta Company_Prospectos del scraping corporativo.');
   readonly editingKey = signal<EditingKey | null>(null);
   readonly selectedLink = signal('');
   readonly showForm = signal(false);
@@ -48,7 +54,7 @@ export class SearchResultsPageComponent implements OnInit {
     Array.from(
       new Set(
         this.tableRows()
-          .map((row) => row.companyLabel)
+          .map((row) => row.sourceScraping)
           .filter((value) => Boolean(value && value.length))
       )
     ).sort((a, b) => a.localeCompare(b))
@@ -65,6 +71,8 @@ export class SearchResultsPageComponent implements OnInit {
   readonly hasActiveFilters = computed(
     () => !!(this.searchTerm() || this.companyFilter() || this.sourceFilter())
   );
+  readonly sourceScrapingFilter = signal<string | null>(null);
+  readonly hasServerFilter = computed(() => !!this.sourceScrapingFilter());
 
   readonly form = this.fb.nonNullable.group({
     title: [''],
@@ -74,14 +82,26 @@ export class SearchResultsPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.refresh();
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const value = (params.get('sourceScraping') || '').trim();
+      this.sourceScrapingFilter.set(value.length ? value : null);
+      this.refresh();
+    });
   }
 
   refresh(): void {
-    this.searchResultService.loadAll().subscribe({
-      next: () => this.statusMessage.set('Resultados actualizados.'),
-      error: () => this.statusMessage.set('No fue posible cargar los resultados.')
-    });
+    const sourceScraping = this.sourceScrapingFilter();
+    this.searchResultService
+      .loadAll(sourceScraping ? { sourceScraping } : undefined)
+      .subscribe({
+        next: () =>
+          this.statusMessage.set(
+            sourceScraping
+              ? `Company_Prospectos filtrados por source_scraping ${sourceScraping}.`
+              : 'Company_Prospectos actualizados.'
+          ),
+        error: () => this.statusMessage.set('No fue posible cargar los Company_Prospectos.')
+      });
   }
 
   onSearchInput(event: Event): void {
@@ -93,7 +113,11 @@ export class SearchResultsPageComponent implements OnInit {
   onCompanyFilterChange(event: Event): void {
     const value = (event.target as HTMLSelectElement | null)?.value || '';
     this.companyFilter.set(value);
-    this.resultsTable?.filter(value, 'companyLabel', 'equals');
+    if (value) {
+      this.resultsTable?.filter(value, 'sourceScraping', 'equals');
+    } else {
+      this.resultsTable?.filter(null, 'sourceScraping', 'equals');
+    }
   }
 
   onSourceFilterChange(event: Event): void {
@@ -184,5 +208,21 @@ export class SearchResultsPageComponent implements OnInit {
 
     const text = value.trim();
     return text.length ? text : null;
+  }
+
+  private formatSourceScraping(value: string | number | null | undefined): string {
+    if (value === null || value === undefined) {
+      return '';
+    }
+
+    return String(value).trim();
+  }
+
+  clearSourceScrapingFilter(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { sourceScraping: null },
+      queryParamsHandling: 'merge'
+    });
   }
 }

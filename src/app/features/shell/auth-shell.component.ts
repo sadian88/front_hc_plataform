@@ -17,7 +17,7 @@ export class AuthShellComponent {
 
   readonly navItems = [
     { icon: 'layout-dashboard', label: 'Dashboard', path: '/app/dashboard' },
-    { icon: 'shield-check', label: 'Compaヵヴas', path: '/app/companies' },
+    { icon: 'shield-check', label: 'Compañias', path: '/app/companies' },
     { icon: 'users', label: 'User Interactions', path: '/app/user-interactions' },
     { icon: 'activity', label: 'Lead Prospecto', path: '/app/lead-prospecto' },
     { icon: 'search', label: 'Company_Prospectos', path: '/app/company-prospectos' }

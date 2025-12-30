@@ -40,7 +40,7 @@ export class ProspectsPageComponent implements OnInit {
       ...prospect,
       assignedCompanyLabel: this.buildCompanyLabel(prospect.company_id, prospect.company_name),
       originCompanyLabel: this.buildCompanyLabel(
-        prospect.company_origen_lead_id,
+        prospect.company_origen_lead,
         prospect.origen_company_name
       ),
       displayEstado: prospect.estado?.trim() || 'Sin estado',
@@ -88,7 +88,7 @@ export class ProspectsPageComponent implements OnInit {
     estado: [''],
     fechaCreacionOrigen: [''],
     companyId: [''],
-    companyOrigenLeadId: ['']
+    companyOrigenLead: ['']
   });
 
   ngOnInit(): void {
@@ -160,9 +160,7 @@ export class ProspectsPageComponent implements OnInit {
       estado: prospect.estado || '',
       fechaCreacionOrigen: this.formatDateInput(prospect.fecha_creacion_origen),
       companyId: prospect.company_id ? String(prospect.company_id) : '',
-      companyOrigenLeadId: prospect.company_origen_lead_id
-        ? String(prospect.company_origen_lead_id)
-        : ''
+      companyOrigenLead: prospect.company_origen_lead || ''
     });
     this.showForm.set(true);
   }
@@ -220,7 +218,7 @@ export class ProspectsPageComponent implements OnInit {
       estado: '',
       fechaCreacionOrigen: '',
       companyId: '',
-      companyOrigenLeadId: ''
+      companyOrigenLead: ''
     });
   }
 
@@ -244,7 +242,7 @@ export class ProspectsPageComponent implements OnInit {
       estado: this.normalizeString(value.estado),
       fechaCreacionOrigen: this.normalizeDateTime(value.fechaCreacionOrigen),
       companyId: this.parseNumberField(value.companyId),
-      companyOrigenLeadId: this.parseNumberField(value.companyOrigenLeadId)
+      companyOrigenLead: this.normalizeString(value.companyOrigenLead)
     };
   }
 
@@ -275,13 +273,22 @@ export class ProspectsPageComponent implements OnInit {
     return Number.isNaN(date.valueOf()) ? null : date.toISOString();
   }
 
-  private buildCompanyLabel(id?: number | null, name?: string | null): string {
+  private buildCompanyLabel(id?: number | string | null, name?: string | null): string {
     if (name && name.trim().length) {
       return name.trim();
     }
 
     if (id === null || id === undefined) {
       return '';
+    }
+
+    if (typeof id === 'string') {
+      const trimmed = id.trim();
+      if (!trimmed.length) {
+        return '';
+      }
+      const parsed = Number(trimmed);
+      return Number.isNaN(parsed) ? trimmed : `ID ${parsed}`;
     }
 
     return `ID ${id}`;

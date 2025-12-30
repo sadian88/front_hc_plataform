@@ -15,7 +15,7 @@ export interface Prospect {
   estado?: string | null;
   fecha_creacion_origen?: string | null;
   company_id?: number | null;
-  company_origen_lead_id?: number | null;
+  company_origen_lead?: string | null;
   created_at?: string;
   updated_at?: string;
   company_name?: string | null;
@@ -37,7 +37,7 @@ export interface ProspectPayload {
   estado: string | null;
   fechaCreacionOrigen: string | null;
   companyId: number | null;
-  companyOrigenLeadId: number | null;
+  companyOrigenLead: string | null;
 }
 
 export interface ProspectFilters {

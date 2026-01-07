@@ -5,227 +5,308 @@
 .login-wrapper {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1.5rem;
-  background: linear-gradient(180deg, #f5f7fb 0%, #f3f4f6 60%, #eef1f5 100%);
+  align-items: stretch;
+  background-color: var(--color-bg);
+  position: relative;
+  overflow: hidden;
+
+  // Aura effect
+  &::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0) 70%);
+    bottom: -10%;
+    right: -10%;
+    pointer-events: none;
+    z-index: 0;
+  }
 }
 
 .login-grid {
   width: 100%;
-  max-width: 1100px;
   display: grid;
-  gap: 2rem;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-columns: 1fr;
+  z-index: 1;
 }
 
 @media (min-width: 1024px) {
   .login-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: stretch;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 .login-hero {
-  border-radius: 1.5rem;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  padding: 2.5rem;
-  color: #1f2937;
+  background-color: var(--color-accent);
+  padding: 4rem;
+  color: #ffffff;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
 
   .hero-logo {
-    width: 220px;
+    width: 280px;
     height: auto;
-    object-fit: contain;
-  }
-
-  h2 {
-    font-size: clamp(2.5rem, 4vw, 3.5rem);
-    font-weight: 600;
-    line-height: 1.2;
-    margin: 0;
-    color: #111827;
-  }
-
-  p {
-    color: #4b5563;
-    max-width: 32rem;
+    margin-bottom: 3rem;
+    filter: brightness(0) invert(1); // Make logo white if it's dark
   }
 
   .hero-pill {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
     border-radius: 9999px;
-    border: 1px solid #d1d5db;
-    padding: 0.4rem 1.1rem;
-    font-size: 0.85rem;
-    letter-spacing: 0.3rem;
-    text-transform: uppercase;
-    color: #6b7280;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  h2 {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 30rem;
+    opacity: 0.9;
   }
 
   .hero-footer {
-    margin-top: auto;
+    position: absolute;
+    bottom: 3rem;
+    font-size: 0.85rem;
+    opacity: 0.8;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    color: #6b7280;
+    gap: 0.2rem;
 
     strong {
-      color: #111827;
-      font-size: 1.1rem;
+      font-size: 1rem;
+      opacity: 1;
     }
   }
 }
 
+@media (max-width: 1023px) {
+  .login-hero {
+    padding: 3rem 1.5rem;
+    min-height: 40vh;
+  }
+}
+
 .login-card {
-  border-radius: 1.5rem;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 2.5rem;
-  color: #1f2937;
-  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
+  background-color: var(--color-bg);
 
   &__header {
-    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 2.5rem;
+    text-align: center;
 
     .eyebrow {
+      color: var(--color-accent);
+      font-weight: 600;
+      font-size: 0.85rem;
       text-transform: uppercase;
-      letter-spacing: 0.4rem;
-      color: #6b7280;
-      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
     }
 
     h3 {
-      font-size: 2rem;
-      margin: 0.6rem 0 0.2rem;
-      color: #111827;
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--color-text-strong);
+      margin-bottom: 0.5rem;
     }
 
     .subtext {
-      color: #4b5563;
+      color: var(--color-text-secondary);
+      font-size: 1rem;
     }
   }
 }
 
 .login-form {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.5rem;
 
   .form-control {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.5rem;
 
     label {
-      font-size: 0.9rem;
-      color: #1f2937;
-      font-weight: 500;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text-main);
     }
 
     .input-wrapper {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      border-radius: 1rem;
-      border: 1px solid #d1d5db;
-      background: #f9fafb;
-      padding: 0.4rem 1rem;
+      gap: 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: 0.75rem;
+      padding: 0 1rem;
+      transition: all 0.2s ease;
+      background-color: #ffffff;
+
+      &:focus-within {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+      }
+
+      lucide-icon {
+        color: var(--color-text-muted);
+        width: 18px;
+        height: 18px;
+      }
 
       input {
         flex: 1;
         border: none;
-        background: transparent;
-        color: #111827;
-        padding: 0.7rem 0;
+        outline: none;
+        padding: 0.75rem 0;
         font-size: 1rem;
+        background: transparent;
+        color: var(--color-text-strong);
+
+        &::placeholder {
+          color: #9ca3af;
+        }
       }
     }
 
     .error {
-      color: #f87171;
-      font-size: 0.8rem;
+      color: #dc2626;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
     }
   }
 
   .form-meta {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    font-size: 0.9rem;
-    color: #6b7280;
+    align-items: center;
+    font-size: 0.875rem;
 
     .remember {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.5rem;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+
+      input {
+        width: 1rem;
+        height: 1rem;
+        accent-color: var(--color-accent);
+      }
     }
 
     button {
-      color: #1f2937;
-      text-decoration: underline;
-      text-decoration-color: #d1d5db;
-      text-underline-offset: 3px;
+      color: var(--color-accent);
+      font-weight: 600;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 
   .submit-btn {
-    border: none;
-    border-radius: 9999px;
-    background: #16a34a;
-    color: #ffffff;
-    padding: 0.9rem;
+    background-color: var(--color-accent);
+    color: white;
+    padding: 0.875rem;
+    border-radius: 0.75rem;
     font-weight: 600;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
-    transition: background 0.2s ease;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
 
-    &:hover {
-      background: #15803d;
+    &:hover:not(:disabled) {
+      background-color: var(--color-accent-dark);
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
     }
 
     .spinner {
-      width: 20px;
-      height: 20px;
-      animation: spin 0.9s linear infinite;
+      width: 1.25rem;
+      height: 1.25rem;
+      animation: spin 1s linear infinite;
 
       circle {
         fill: none;
         stroke: currentColor;
-        opacity: 0.4;
-        stroke-width: 4;
+        stroke-width: 3;
+        stroke-dasharray: 60;
+        stroke-dashoffset: 0;
       }
     }
   }
 
   .alert {
-    border-radius: 1rem;
-    padding: 0.9rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
 
     &--error {
-      border: 1px solid rgba(248, 113, 113, 0.4);
-      background: rgba(248, 113, 113, 0.1);
-      color: #b91c1c;
+      background-color: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fee2e2;
     }
 
     &--success {
-      border: 1px solid rgba(34, 197, 94, 0.35);
-      background: rgba(34, 197, 94, 0.1);
-      color: #15803d;
+      background-color: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #d1fae5;
     }
   }
 }
 
 @keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
   to {
     transform: rotate(360deg);
   }

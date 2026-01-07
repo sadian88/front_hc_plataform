@@ -1,0 +1,144 @@
+<form class="lead-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+        <div class="form-control">
+            <label for="nombre">Nombre</label>
+            <div class="input-wrapper">
+                <input id="nombre" type="text" placeholder="Nathalie Vega" formControlName="nombre" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="cargo">Cargo</label>
+            <div class="input-wrapper">
+                <input id="cargo" type="text" placeholder="CMO" formControlName="cargo" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="seniority">Seniority</label>
+            <div class="input-wrapper">
+                <input id="seniority" type="text" placeholder="Senior" formControlName="seniority" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="rolFuncional">Rol funcional</label>
+            <div class="input-wrapper">
+                <input id="rolFuncional" type="text" placeholder="Marketing Ops" formControlName="rolFuncional" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="empresa">Empresa</label>
+            <div class="input-wrapper">
+                <input id="empresa" type="text" placeholder="HubCapture" formControlName="empresa" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="sectorEmpresa">Sector</label>
+            <div class="input-wrapper">
+                <input id="sectorEmpresa" type="text" placeholder="Tecnología" formControlName="sectorEmpresa" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="pais">País</label>
+            <div class="input-wrapper">
+                <input id="pais" type="text" placeholder="Colombia" formControlName="pais" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="ciudad">Ciudad</label>
+            <div class="input-wrapper">
+                <input id="ciudad" type="text" placeholder="Bogotá" formControlName="ciudad" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="companyId">ID compañía</label>
+            <div class="input-wrapper">
+                <input id="companyId" type="number" placeholder="12" formControlName="companyId" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="tamanoEmpresaEmpleados">Tamaño (empleados)</label>
+            <div class="input-wrapper">
+                <input id="tamanoEmpresaEmpleados" type="number" placeholder="250"
+                    formControlName="tamanoEmpresaEmpleados" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-grid mt-6">
+        <div class="form-control textarea">
+            <label for="headlinePerfil">Headline</label>
+            <div class="input-wrapper textarea">
+                <textarea id="headlinePerfil" rows="2" placeholder="VP Growth en HubCapture"
+                    formControlName="headlinePerfil"></textarea>
+            </div>
+        </div>
+
+        <div class="form-control textarea">
+            <label for="resumenPerfil">Resumen</label>
+            <div class="input-wrapper textarea">
+                <textarea id="resumenPerfil" rows="3" placeholder="Resumen del perfil"
+                    formControlName="resumenPerfil"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-grid mt-6">
+        <div class="form-control textarea">
+            <label for="temasClavePublicaciones">Temas clave</label>
+            <div class="input-wrapper textarea">
+                <textarea id="temasClavePublicaciones" rows="3" placeholder="Go-to-market&#10;Automatización"
+                    formControlName="temasClavePublicaciones"></textarea>
+            </div>
+            <small class="helper-text">Separa los valores por coma o salto de línea.</small>
+        </div>
+
+        <div class="form-control textarea">
+            <label for="ultimasPublicacionesTexto">Últimas publicaciones</label>
+            <div class="input-wrapper textarea">
+                <textarea id="ultimasPublicacionesTexto" rows="3" placeholder="Artículo sobre revenue ops"
+                    formControlName="ultimasPublicacionesTexto"></textarea>
+            </div>
+            <small class="helper-text">Cada línea se convertirá en un item.</small>
+        </div>
+    </div>
+
+    <div class="form-grid mt-6">
+        <div class="form-control textarea">
+            <label for="interaccionesRelevantes">Interacciones</label>
+            <div class="input-wrapper textarea">
+                <textarea id="interaccionesRelevantes" rows="3" placeholder="Comentó en demo del 12/07"
+                    formControlName="interaccionesRelevantes"></textarea>
+            </div>
+        </div>
+
+        <div class="form-control textarea">
+            <label for="tagsInternos">Tags internos</label>
+            <div class="input-wrapper textarea">
+                <textarea id="tagsInternos" rows="3" placeholder="ICP alto&#10;Newsletter"
+                    formControlName="tagsInternos"></textarea>
+            </div>
+            <small class="helper-text">Ejemplo: ICP alto, Newsletter, ABM.</small>
+        </div>
+    </div>
+
+    <div class="form-control mt-6">
+        <label for="linkedinUrl">LinkedIn URL</label>
+        <div class="input-wrapper">
+            <input id="linkedinUrl" type="url" placeholder="https://linkedin.com/in/usuario"
+                formControlName="linkedinUrl" />
+        </div>
+    </div>
+
+    <div class="form-actions mt-8">
+        <button type="submit" class="btn-primary" [disabled]="form.invalid">{{ submitLabel }}</button>
+        <button type="button" class="btn-secondary" (click)="cancel.emit()">Cancelar</button>
+    </div>
+</form>

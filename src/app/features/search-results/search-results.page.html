@@ -1,39 +1,43 @@
-<section class="space-y-6">
-  <header class="flex flex-wrap items-center justify-between gap-4">
+<section class="space-y-8 pb-12">
+  <header class="flex flex-wrap items-center justify-between gap-4 px-2">
     <div>
-      <p class="text-sm uppercase tracking-wide text-night-500">Resultados</p>
-      <h1 class="text-3xl font-semibold text-night-100">Company_Prospectos</h1>
-      <p class="text-night-400">{{ statusMessage() }}</p>
+      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Company Prospectos</h1>
+      <p class="text-gray-500 font-medium">{{ statusMessage() }}</p>
     </div>
-    <button class="btn-secondary" type="button" (click)="refresh()">Refrescar lista</button>
+    <div class="flex gap-3">
+      <button
+        class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
+        (click)="refresh()">
+        <lucide-icon name="refresh-cw" class="size-4" [class.animate-spin]="loading()"></lucide-icon>
+        Refrescar
+      </button>
+    </div>
   </header>
 
-  <article class="glass-card card-primary space-y-4">
+  <article class="glass-card">
     <div *ngIf="hasServerFilter()" class="server-filter-banner">
       <span>
         Filtrando por <strong>source_scraping</strong> = {{ sourceScrapingFilter() }}
       </span>
-      <button type="button" class="btn-secondary" (click)="clearSourceScrapingFilter()">
+      <button type="button" class="text-sm font-semibold underline hover:text-hc-700"
+        (click)="clearSourceScrapingFilter()">
         Ver todos
       </button>
     </div>
 
-    <div class="table-controls">
+    <div class="table-controls mb-6">
       <div class="control-field grow">
-        <label for="searchFilter">Buscar</label>
-        <input
-          id="searchFilter"
-          type="search"
-          placeholder="Título, link, fuente..."
-          [value]="searchTerm()"
-          (input)="onSearchInput($event)" />
+        <label for="searchFilter">Criterio de búsqueda</label>
+        <div class="relative">
+          <input id="searchFilter" type="search" placeholder="Título, link, fuente..." [value]="searchTerm()"
+            (input)="onSearchInput($event)" class="w-full pl-10" />
+          <lucide-icon name="search"
+            class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400"></lucide-icon>
+        </div>
       </div>
       <div class="control-field">
         <label for="companyFilter">Source_Scraping</label>
-        <select
-          id="companyFilter"
-          [value]="companyFilter()"
-          (change)="onCompanyFilterChange($event)">
+        <select id="companyFilter" [value]="companyFilter()" (change)="onCompanyFilterChange($event)">
           <option value="">Todas</option>
           <option *ngFor="let company of companyOptions()" [value]="company">
             {{ company }}
@@ -42,35 +46,23 @@
       </div>
       <div class="control-field">
         <label for="sourceFilter">Fuente</label>
-        <select
-          id="sourceFilter"
-          [value]="sourceFilter()"
-          (change)="onSourceFilterChange($event)">
+        <select id="sourceFilter" [value]="sourceFilter()" (change)="onSourceFilterChange($event)">
           <option value="">Todas</option>
           <option *ngFor="let source of sourceOptions()" [value]="source">
             {{ source }}
           </option>
         </select>
       </div>
-      <button
-        type="button"
-        class="btn-secondary clear-filters"
-        (click)="clearFilters()"
-        [disabled]="!hasActiveFilters()">
-        Limpiar filtros
+      <button type="button"
+        class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 hover:text-hc-600 disabled:opacity-30 transition-colors"
+        (click)="clearFilters()" [disabled]="!hasActiveFilters()">
+        <lucide-icon name="x" class="size-4"></lucide-icon>
+        Limpiar
       </button>
     </div>
 
-    <p-table
-      #resultsTable
-      class="results-table"
-      [value]="tableRows()"
-      [loading]="loading()"
-      [paginator]="true"
-      [rows]="10"
-      [rowsPerPageOptions]="[10, 20, 50]"
-      [showCurrentPageReport]="true"
-      [globalFilterFields]="[
+    <p-table #resultsTable class="results-table" [value]="tableRows()" [loading]="loading()" [paginator]="true"
+      [rows]="10" [rowsPerPageOptions]="[10, 20, 50]" [showCurrentPageReport]="true" [globalFilterFields]="[
         'companyLabel',
         'title',
         'link',
@@ -78,16 +70,13 @@
         'displayed_link',
         'displaySource',
         'sourceScraping'
-      ]"
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-      responsiveLayout="scroll"
+      ]" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" responsiveLayout="scroll"
       dataKey="link_key">
       <ng-template pTemplate="header">
         <tr>
-          <th>Source_Scraping</th>
-          <th>Resultado</th>
-          <th>Link</th>
-          <th>Redirect</th>
+          <th>Source Scraping</th>
+          <th>Resultado / Título</th>
+          <th>Links</th>
           <th>Fuente</th>
           <th class="actions-column">Acciones</th>
         </tr>
@@ -95,50 +84,54 @@
       <ng-template pTemplate="body" let-result>
         <tr>
           <td>
-            <div class="flex flex-col gap-1">
-              <span class="font-semibold text-night-100">
+            <div class="flex flex-col gap-0.5">
+              <span class="font-bold text-gray-900 leading-tight">
                 {{ result.sourceScraping || 'Sin dato' }}
               </span>
-              <small class="text-night-500">
-                {{ result.companyLabel }} · ID #{{ result.company_id }}
-              </small>
+              <span class="text-xs text-gray-400 font-mono">
+                ID: {{ result.company_id }}
+              </span>
             </div>
           </td>
           <td>
-            <div class="flex flex-col gap-1">
-              <span class="font-semibold text-night-100">{{ result.title || 'Sin título' }}</span>
-              <small class="text-night-500" *ngIf="result.displayed_link">
+            <div class="flex flex-col gap-1 max-w-sm">
+              <span class="font-semibold text-gray-800 leading-tight line-clamp-2" title="{{ result.title }}">
+                {{ result.title || 'Sin título' }}
+              </span>
+              <span class="text-xs text-gray-500 font-medium truncate" *ngIf="result.displayed_link">
                 {{ result.displayed_link }}
-              </small>
+              </span>
             </div>
           </td>
           <td>
-            <a class="link" [href]="result.link" target="_blank" rel="noopener">
-              {{ result.link }}
-            </a>
+            <div class="flex items-center gap-2">
+              <a *ngIf="result.link" [href]="result.link" target="_blank" rel="noopener"
+                class="p-1.5 rounded-lg bg-gray-50 text-gray-500 hover:text-hc-600 hover:bg-hc-50 transition-colors"
+                title="Link Original">
+                <lucide-icon name="link" class="size-4"></lucide-icon>
+              </a>
+              <a *ngIf="result.redirect_link" [href]="result.redirect_link" target="_blank" rel="noopener"
+                class="p-1.5 rounded-lg bg-gray-50 text-gray-500 hover:text-hc-600 hover:bg-hc-50 transition-colors"
+                title="Link Redirección">
+                <lucide-icon name="external-link" class="size-4"></lucide-icon>
+              </a>
+            </div>
           </td>
           <td>
-            <a
-              class="link"
-              *ngIf="result.redirect_link"
-              [href]="result.redirect_link"
-              target="_blank"
-              rel="noopener">
-              {{ result.redirect_link }}
-            </a>
-            <span class="text-secondary" *ngIf="!result.redirect_link">Sin URL</span>
-          </td>
-          <td>
-            <span>{{ result.displaySource }}</span>
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+              {{ result.displaySource }}
+            </span>
           </td>
           <td class="actions-column">
-            <button type="button" class="action-btn" (click)="startEdit(result)">Editar</button>
-            <button
-              type="button"
-              class="action-btn action-btn--danger"
-              (click)="deleteResult(result)">
-              Eliminar
-            </button>
+            <div class="flex items-center justify-end gap-1">
+              <button class="icon-btn" (click)="startEdit(result)" title="Editar">
+                <lucide-icon name="pencil" class="size-4"></lucide-icon>
+              </button>
+              <button class="icon-btn icon-btn--danger" (click)="deleteResult(result)" title="Eliminar">
+                <lucide-icon name="trash" class="size-4"></lucide-icon>
+              </button>
+            </div>
           </td>
         </tr>
       </ng-template>

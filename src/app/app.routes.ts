@@ -48,9 +48,21 @@ export const routes: Routes = [
           import('./features/companies/companies.page').then((m) => m.CompaniesPageComponent)
       },
       {
+        path: 'user-interactions/:id/edit',
+        loadComponent: () =>
+          import('./features/leads/lead-editor.page').then((m) => m.LeadEditorPageComponent)
+      },
+      {
         path: 'user-interactions',
         loadComponent: () =>
           import('./features/leads/leads.page').then((m) => m.LeadsPageComponent)
+      },
+      {
+        path: 'lead-prospecto/:id/edit',
+        loadComponent: () =>
+          import('./features/prospects/prospect-editor.page').then(
+            (m) => m.ProspectEditorPageComponent
+          )
       },
       {
         path: 'lead-prospecto',

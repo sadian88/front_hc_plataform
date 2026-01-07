@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TableModule, Table } from 'primeng/table';
+import { LucideAngularModule } from 'lucide-angular';
 import {
   SearchResultService,
   SearchResult
@@ -11,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-search-results-page',
   standalone: true,
-  imports: [CommonModule, TableModule],
+  imports: [CommonModule, TableModule, LucideAngularModule],
   templateUrl: './search-results.page.html',
   styleUrl: './search-results.page.scss'
 })

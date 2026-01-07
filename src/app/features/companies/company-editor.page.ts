@@ -3,6 +3,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { CompanyFormComponent } from './company-form/company-form.component';
+import { LucideAngularModule } from 'lucide-angular';
 import {
   Company,
   CompanyPayload,
@@ -12,7 +13,7 @@ import {
 @Component({
   selector: 'app-company-editor-page',
   standalone: true,
-  imports: [CommonModule, CompanyFormComponent],
+  imports: [CommonModule, CompanyFormComponent, LucideAngularModule],
   templateUrl: './company-editor.page.html',
   styleUrl: './company-editor.page.scss'
 })

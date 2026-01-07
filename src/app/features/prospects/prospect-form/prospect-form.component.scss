@@ -1,0 +1,80 @@
+:host {
+    display: block;
+}
+
+.prospect-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--color-text-main);
+    }
+
+    .input-wrapper {
+        border-radius: 0.75rem;
+        border: 1px solid var(--color-border);
+        background: #ffffff;
+        padding: 0.625rem 1rem;
+        transition: all 0.2s;
+
+        &:focus-within {
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--color-text-strong);
+            font-size: 0.9375rem;
+            outline: none;
+
+            &::placeholder {
+                color: #9ca3af;
+            }
+        }
+    }
+
+    &.textarea {
+        grid-column: 1 / -1;
+
+        .input-wrapper {
+            padding: 0;
+
+            textarea {
+                padding: 0.75rem 1rem;
+                min-height: 100px;
+                resize: vertical;
+            }
+        }
+    }
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+
+    button {
+        cursor: pointer;
+    }
+}

@@ -1,31 +1,47 @@
-<section class="space-y-6">
-  <header class="flex flex-wrap items-center justify-between gap-4">
+<section class="space-y-8 pb-12">
+  <header class="flex flex-wrap items-center justify-between gap-4 px-2">
     <div>
-      <p class="text-sm uppercase tracking-wide text-night-500">Gestión</p>
-      <h1 class="text-3xl font-semibold text-night-100">Compañías</h1>
-      <p class="text-night-400">{{ statusMessage() }}</p>
+      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Compañías</h1>
+      <p class="text-gray-500 font-medium">{{ statusMessage() }}</p>
     </div>
-    <button class="btn-primary" type="button" (click)="startCreate()">
-      Agregar compañía
-    </button>
+    <div class="flex gap-3">
+      <button
+        class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
+        (click)="refresh()">
+        <lucide-icon name="refresh-cw" class="size-4" [class.animate-spin]="loading()"></lucide-icon>
+        Refrescar
+      </button>
+      <button
+        class="flex items-center gap-2 rounded-xl bg-hc-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-hc-700 transition-all shadow-sm shadow-hc-600/20"
+        type="button" (click)="startCreate()">
+        <lucide-icon name="plus" class="size-4"></lucide-icon>
+        Agregar compañía
+      </button>
+    </div>
   </header>
 
-  <article class="glass-card card-primary space-y-4">
-    <p-table
-      class="company-table"
-      [value]="rowData()"
-      [loading]="loading()"
-      responsiveLayout="scroll"
-      dataKey="id">
+  <article class="glass-card">
+    <div class="table-controls mb-6">
+      <div class="control-field grow">
+        <label for="searchFilter">Criterio de búsqueda</label>
+        <div class="relative">
+          <input id="searchFilter" type="search" placeholder="Nombre de empresa, segmento..."
+            (input)="onSearchChange($event)" class="w-full pl-10" />
+          <lucide-icon name="search"
+            class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400"></lucide-icon>
+        </div>
+      </div>
+    </div>
+
+    <p-table #dt class="company-table" [value]="rowData()" [loading]="loading()" responsiveLayout="scroll" dataKey="id"
+      [globalFilterFields]="['company_name', 'company_segment', 'company_icp', 'icp_target_country']" [paginator]="true"
+      [rows]="10">
       <ng-template pTemplate="header">
         <tr>
           <th>Empresa</th>
           <th>Segmento</th>
-          <th>Perfil corporativo</th>
-          <th>Perfil cliente</th>
-          <th>ICP</th>
-          <th>ICP Pais</th>
-          <th>ICP Tamano</th>
+          <th>Links</th>
+          <th>ICP Target</th>
           <th>Creación</th>
           <th class="actions-column">Acciones</th>
         </tr>
@@ -33,45 +49,72 @@
       <ng-template pTemplate="body" let-company>
         <tr>
           <td>
-            <div class="flex flex-col">
-              <span class="font-semibold text-night-100">{{ company.company_name }}</span>
-              <small class="text-night-500">#{{ company.id }}</small>
+            <div class="flex items-center gap-3">
+              <div class="avatar-circle bg-blue-50 text-blue-500">
+                <lucide-icon name="building-2" class="size-5"></lucide-icon>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-gray-900">{{ company.company_name }}</span>
+                <span class="text-xs text-gray-400 font-mono">ID: {{ company.id }}</span>
+              </div>
             </div>
           </td>
           <td>
-            <span class="pill">{{ company.company_segment || 'Sin segmento' }}</span>
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              {{ company.company_segment || 'General' }}
+            </span>
           </td>
           <td>
-            <a class="link" [href]="company.company_url_profile" target="_blank" rel="noopener">
-              {{ company.company_url_profile }}
-            </a>
+            <div class="flex gap-2">
+              <a *ngIf="company.company_url_profile" [href]="company.company_url_profile" target="_blank"
+                class="p-1.5 rounded-lg bg-gray-50 text-gray-400 hover:text-hc-600 hover:bg-hc-50 transition-colors"
+                title="Perfil Corporativo">
+                <lucide-icon name="building-2" class="size-4"></lucide-icon>
+              </a>
+              <a *ngIf="company.customer_url_profile" [href]="company.customer_url_profile" target="_blank"
+                class="p-1.5 rounded-lg bg-gray-50 text-gray-400 hover:text-hc-600 hover:bg-hc-50 transition-colors"
+                title="Perfil Cliente">
+                <lucide-icon name="users" class="size-4"></lucide-icon>
+              </a>
+            </div>
           </td>
           <td>
-            <a class="link" [href]="company.customer_url_profile" target="_blank" rel="noopener">
-              {{ company.customer_url_profile || 'N/A' }}
-            </a>
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center gap-1.5 text-xs text-gray-600">
+                <span class="font-semibold text-gray-400 w-12">Perfil:</span>
+                <span>{{ company.company_icp || '---' }}</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs text-gray-600">
+                <span class="font-semibold text-gray-400 w-12">País:</span>
+                <span>{{ company.icp_target_country || '---' }}</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs text-gray-600">
+                <span class="font-semibold text-gray-400 w-12">Tamaño:</span>
+                <span>{{ company.icp_company_size || '---' }}</span>
+              </div>
+            </div>
           </td>
           <td>
-            <span class="text-secondary">{{ company.company_icp || 'N/A' }}</span>
+            <span class="text-sm text-gray-500">
+              {{ company.creation_date ? (company.creation_date | date:'MMM d, y') : '---' }}
+            </span>
           </td>
-          <td>
-            <span class="text-secondary">{{ company.icp_target_country || 'N/A' }}</span>
-          </td>
-          <td>
-            <span class="text-secondary">{{ company.icp_company_size || 'N/A' }}</span>
-          </td>
-          <td>{{ company.creation_date || 'N/A' }}</td>
           <td class="actions-column">
-            <button type="button" class="action-btn" (click)="viewUserInteractions(company)">
-              Ver User Interactions
-            </button>
-            <button type="button" class="action-btn" (click)="viewCompanyProspectos(company)">
-              Ver Company_Prospectos
-            </button>
-            <button type="button" class="action-btn" (click)="startEdit(company)">Editar</button>
-            <button type="button" class="action-btn action-btn--danger" (click)="deleteCompany(company)">
-              Eliminar
-            </button>
+            <div class="flex items-center justify-end gap-1">
+              <button class="icon-btn" (click)="viewUserInteractions(company)" title="Ver User Interactions">
+                <lucide-icon name="users" class="size-4"></lucide-icon>
+              </button>
+              <button class="icon-btn" (click)="viewCompanyProspectos(company)" title="Ver Company_Prospectos">
+                <lucide-icon name="search" class="size-4"></lucide-icon>
+              </button>
+              <button class="icon-btn" (click)="startEdit(company)" title="Editar">
+                <lucide-icon name="pencil" class="size-4"></lucide-icon>
+              </button>
+              <button class="icon-btn icon-btn--danger" (click)="deleteCompany(company)" title="Eliminar">
+                <lucide-icon name="trash" class="size-4"></lucide-icon>
+              </button>
+            </div>
           </td>
         </tr>
       </ng-template>

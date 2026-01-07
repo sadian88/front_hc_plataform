@@ -1,4 +1,4 @@
-@import 'primeng/resources/themes/lara-dark-indigo/theme.css';
+@import 'primeng/resources/themes/lara-light-indigo/theme.css';
 @import 'primeng/resources/primeng.min.css';
 @import 'primeflex/primeflex.css';
 @import 'primeicons/primeicons.css';
@@ -14,34 +14,35 @@
     --color-card-muted: #f9fafb;
     --color-border: #e5e7eb;
     --color-border-soft: #d1d5db;
-    --color-text-strong: #111827;
-    --color-text-main: #1f2937;
+    --color-text-strong: #1f2937;
+    --color-text-main: #374151;
     --color-text-secondary: #4b5563;
     --color-text-muted: #6b7280;
-    --color-accent: #16a34a;
-    --color-accent-light: #22c55e;
-    --color-accent-dark: #15803d;
+    --color-accent: #059669; // HubCapture Green
+    --color-accent-light: #10b981;
+    --color-accent-dark: #047857;
     --color-warning: #facc15;
   }
 
   html,
   body {
-    font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-color: var(--color-bg);
     color: var(--color-text-main);
     min-height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     margin: 0;
     padding: 0;
-    background-image: linear-gradient(180deg, #f6f7fb 0%, #f3f4f6 60%, #edf0f5 100%);
-    background-repeat: no-repeat;
+    background-color: var(--color-bg);
   }
 
   ::selection {
     background: var(--color-accent-light);
-    color: var(--color-text-strong);
+    color: #ffffff;
   }
 }
 

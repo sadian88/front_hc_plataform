@@ -1,18 +1,19 @@
-<section class="company-editor">
-  <header class="editor-header">
+<section class="space-y-8 pb-12">
+  <header class="flex flex-wrap items-center justify-between gap-4 px-2">
     <div>
-      <p class="eyebrow">Companias</p>
-      <h1>{{ submitLabel() }} compania</h1>
-      <p class="status">{{ statusMessage() }}</p>
+      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">{{ submitLabel() }} compañía</h1>
+      <p class="text-gray-500 font-medium">{{ statusMessage() }}</p>
     </div>
-    <button class="btn-secondary" type="button" (click)="goBack()">Volver</button>
+    <button
+      class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
+      type="button" (click)="goBack()">
+      <lucide-icon name="arrow-left" class="size-4"></lucide-icon>
+      Volver
+    </button>
   </header>
 
-  <article class="glass-card card-secondary editor-card">
-    <app-company-form
-      [company]="company()"
-      [submitLabel]="submitLabel()"
-      (save)="handleSave($event)"
+  <article class="glass-card editor-card">
+    <app-company-form [company]="company()" [submitLabel]="submitLabel()" (save)="handleSave($event)"
       (cancel)="goBack()"></app-company-form>
   </article>
 </section>

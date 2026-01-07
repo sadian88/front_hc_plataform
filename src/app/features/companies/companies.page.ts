@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import {
   CompanyService,
   Company
@@ -19,6 +19,8 @@ export class CompaniesPageComponent implements OnInit {
   private readonly companyService = inject(CompanyService);
   private readonly router = inject(Router);
 
+  @ViewChild('dt') dt: Table | undefined;
+
   readonly companies = this.companyService.companies;
   readonly loading = this.companyService.loading;
   readonly statusMessage = signal('Consulta y administra perfiles empresariales.');
@@ -27,6 +29,11 @@ export class CompaniesPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.refresh();
+  }
+
+  onSearchChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.dt?.filterGlobal(value, 'contains');
   }
 
   refresh(): void {

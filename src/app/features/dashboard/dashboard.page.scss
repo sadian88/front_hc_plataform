@@ -3,56 +3,196 @@
 }
 
 .glass-card {
-  background: var(--color-card);
-  border-color: var(--color-border);
+  background: #ffffff;
+  border-radius: 1.25rem;
+  border: 1px solid var(--color-border);
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  }
 }
 
 .metric-card {
-  background: var(--color-card);
+  background: #ffffff;
+  border-radius: 1.25rem;
   border: 1px solid var(--color-border);
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
-  p:first-child {
+  .metric-label {
+    font-size: 0.875rem;
+    font-weight: 600;
     color: var(--color-text-secondary);
-    letter-spacing: 0.02em;
   }
 
-  p:nth-child(2) {
+  .metric-value {
+    font-size: 1.875rem;
+    font-weight: 800;
     color: var(--color-text-strong);
-    font-size: 2.25rem;
+    letter-spacing: -0.02em;
   }
 
-  p:nth-child(3) {
+  .metric-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+
+    background: #fef2f2;
+    color: #dc2626;
+
+    &.trend--up {
+      background: #ecfdf5;
+      color: #059669;
+    }
+  }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .card-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text-strong);
+  }
+
+  .card-subtitle {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .count-badge {
+    background: #f3f4f6;
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+  }
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f9fafb;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .avatar-circle {
+    width: 40px;
+    height: 40px;
+    background: #ecfdf5;
+    color: #059669;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  .item-primary {
+    font-weight: 600;
+    color: var(--color-text-strong);
+    font-size: 0.9375rem;
+  }
+
+  .item-secondary {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .item-timestamp {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+}
+
+.company-pill {
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 1rem;
+  border: 1px solid #f1f5f9;
+  margin-bottom: 1rem;
+
+  .company-name {
+    font-weight: 700;
+    color: var(--color-text-strong);
+    font-size: 0.9375rem;
+  }
+
+  .company-id {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+
+  .progress-bar-bg {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--color-accent);
+  }
+
+  .company-results {
+    font-size: 0.75rem;
+    font-weight: 700;
     color: var(--color-accent);
-    font-weight: 500;
-  }
-}
-
-.status-chip--ok {
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  background: rgba(34, 197, 94, 0.12);
-  color: var(--color-accent-dark);
-}
-
-.status-chip--warn {
-  border: 1px solid rgba(250, 204, 21, 0.35);
-  background: rgba(250, 204, 21, 0.15);
-  color: #92400e;
-}
-
-.chart-wrapper {
-  max-width: 320px;
-  margin: auto;
-
-  canvas {
-    width: 100% !important;
-    height: auto !important;
   }
 }
 
 .insight-card {
-  border: 1px solid var(--color-border);
-  border-radius: 1.5rem;
-  padding: 1.25rem;
-  background: var(--color-card-muted);
-  box-shadow: 0 15px 25px rgba(15, 23, 42, 0.06);
+  padding: 1rem;
+
+  .insight-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+
+  .insight-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text-strong);
+  }
+
+  .insight-desc {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.chart-wrapper {
+  max-width: 280px;
+  position: relative;
 }

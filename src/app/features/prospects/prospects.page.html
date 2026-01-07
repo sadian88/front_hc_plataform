@@ -1,40 +1,44 @@
-<section class="space-y-6">
-  <header class="flex flex-wrap items-center justify-between gap-4">
+<section class="space-y-8 pb-12">
+  <header class="flex flex-wrap items-center justify-between gap-4 px-2">
     <div>
-      <p class="text-sm uppercase tracking-wide text-night-500">Seguimiento</p>
-      <h1 class="text-3xl font-semibold text-night-100">Lead Prospecto</h1>
-      <p class="text-night-400">{{ statusMessage() }}</p>
+      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Lead Prospecto</h1>
+      <p class="text-gray-500 font-medium">{{ statusMessage() }}</p>
     </div>
-    <button class="btn-secondary" type="button" (click)="refresh()">Refrescar lista</button>
+    <div class="flex gap-3">
+      <button
+        class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
+        (click)="refresh()">
+        <lucide-icon name="refresh-cw" class="size-4" [class.animate-spin]="loading()"></lucide-icon>
+        Refrescar
+      </button>
+    </div>
   </header>
 
-  <article class="glass-card card-primary space-y-4">
+  <article class="glass-card">
     <div *ngIf="hasServerFilter()" class="server-filter-banner">
       <span>
         Filtrando por <strong>company_id</strong> = {{ sourceScrapingFilter() }}
       </span>
-      <button type="button" class="btn-secondary" (click)="clearSourceScrapingFilter()">
+      <button type="button" class="text-sm font-semibold underline hover:text-hc-700"
+        (click)="clearSourceScrapingFilter()">
         Ver todos
       </button>
     </div>
 
-    <div class="table-controls">
+    <div class="table-controls mb-6">
       <div class="control-field grow">
-        <label for="searchFilter">Buscar</label>
-        <input
-          id="searchFilter"
-          type="search"
-          placeholder="Nombre, email, empresa..."
-          [value]="searchTerm()"
-          (input)="onSearchInput($event)" />
+        <label for="searchFilter">Criterio de búsqueda</label>
+        <div class="relative">
+          <input id="searchFilter" type="search" placeholder="Nombre, email, empresa..." [value]="searchTerm()"
+            (input)="onSearchInput($event)" class="w-full pl-10" />
+          <lucide-icon name="search"
+            class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400"></lucide-icon>
+        </div>
       </div>
       <div class="control-field">
         <label for="companyFilter">Empresa asignada</label>
-        <select
-          id="companyFilter"
-          [value]="companyFilter()"
-          (change)="onCompanyFilterChange($event)">
-          <option value="">Todas</option>
+        <select id="companyFilter" [value]="companyFilter()" (change)="onCompanyFilterChange($event)">
+          <option value="">Todas las empresas</option>
           <option *ngFor="let company of companyOptions()" [value]="company">
             {{ company }}
           </option>
@@ -42,248 +46,96 @@
       </div>
       <div class="control-field">
         <label for="estadoFilter">Estado</label>
-        <select
-          id="estadoFilter"
-          [value]="estadoFilter()"
-          (change)="onEstadoFilterChange($event)">
-          <option value="">Todos</option>
+        <select id="estadoFilter" [value]="estadoFilter()" (change)="onEstadoFilterChange($event)">
+          <option value="">Cualquier estado</option>
           <option *ngFor="let estado of estadoOptions()" [value]="estado">
             {{ estado }}
           </option>
         </select>
       </div>
-      <button
-        type="button"
-        class="btn-secondary clear-filters"
-        (click)="clearFilters()"
-        [disabled]="!hasActiveFilters()">
-        Limpiar filtros
+      <button type="button"
+        class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 hover:text-hc-600 disabled:opacity-30 transition-colors"
+        (click)="clearFilters()" [disabled]="!hasActiveFilters()">
+        <lucide-icon name="x" class="size-4"></lucide-icon>
+        Limpiar
       </button>
     </div>
 
-    <p-table
-      #prospectsTable
-      class="prospect-table"
-      [value]="tableRows()"
-      [loading]="loading()"
-      [paginator]="true"
-      [rows]="10"
-      [rowsPerPageOptions]="[10, 20, 50]"
-      [showCurrentPageReport]="true"
-      [globalFilterFields]="[
-        'nombre_completo',
-        'email',
-        'perfil_linkedin',
-        'cargo',
-        'assignedCompanyLabel',
-        'originCompanyLabel',
-        'displayEstado',
-        'displayLocation'
-      ]"
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-      responsiveLayout="scroll"
+    <p-table #prospectsTable class="prospect-table" [value]="tableRows()" [loading]="loading()" [paginator]="true"
+      [rows]="10" [rowsPerPageOptions]="[10, 20, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll"
+      [globalFilterFields]="['nombre_completo', 'email', 'cargo', 'assignedCompanyLabel', 'displayLocation', 'displayEstado']"
       dataKey="id">
       <ng-template pTemplate="header">
         <tr>
-          <th>Actualización</th>
           <th>Lead Prospecto</th>
           <th>Contacto</th>
           <th>Ubicación</th>
-          <th>Empresas</th>
+          <th>Empresa Asignada</th>
+          <th>Estado</th>
+          <th>Fecha</th>
           <th class="actions-column">Acciones</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-prospect>
         <tr>
           <td>
-            <div class="flex flex-col gap-1">
-              <span class="font-semibold text-night-100">
-                {{ prospect.updated_at ? (prospect.updated_at | date: 'mediumDate') : 'Sin datos' }}
-              </span>
-              <small class="text-night-500" *ngIf="prospect.updated_at">
-                {{ prospect.updated_at | date: 'shortTime' }}
-              </small>
-              <small class="text-night-400" *ngIf="prospect.fecha_creacion_origen">
-                Origen: {{ prospect.fecha_creacion_origen | date: 'medium' }}
-              </small>
+            <div class="flex items-center gap-3">
+              <div class="avatar-circle">
+                <lucide-icon name="user" class="size-5"></lucide-icon>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-gray-900">{{ prospect.nombre_completo || 'Sin nombre' }}</span>
+                <span class="text-xs text-gray-500 font-medium" *ngIf="prospect.cargo">{{ prospect.cargo }}</span>
+              </div>
             </div>
           </td>
           <td>
-            <div class="flex flex-col gap-1">
-              <span class="font-semibold text-night-100">
-                {{ prospect.nombre_completo || 'Sin nombre' }}
-              </span>
-              <span class="text-secondary" *ngIf="prospect.cargo">{{ prospect.cargo }}</span>
-              <small class="text-night-500" *ngIf="prospect.about">{{ prospect.about }}</small>
-            </div>
-          </td>
-          <td>
-            <div class="flex flex-col gap-1">
-              <a
-                *ngIf="prospect.email"
-                class="link"
-                [href]="'mailto:' + prospect.email">
-                {{ prospect.email }}
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center gap-2 text-sm text-gray-600" *ngIf="prospect.email">
+                <lucide-icon name="mail" class="size-3 text-gray-400"></lucide-icon>
+                <span>{{ prospect.email }}</span>
+              </div>
+              <a *ngIf="prospect.perfil_linkedin" [href]="prospect.perfil_linkedin" target="_blank"
+                class="flex items-center gap-2 text-xs font-semibold text-blue-600 hover:underline">
+                <lucide-icon name="linkedin" class="size-3"></lucide-icon>
+                LinkedIn
               </a>
-              <span class="text-night-500" *ngIf="!prospect.email">Sin email</span>
-              <a
-                class="link"
-                *ngIf="prospect.perfil_linkedin"
-                [href]="prospect.perfil_linkedin"
-                target="_blank"
-                rel="noopener">
-                Perfil LinkedIn
-              </a>
-              <span class="text-night-400" *ngIf="!prospect.perfil_linkedin">Sin LinkedIn</span>
             </div>
           </td>
           <td>
-            <div class="flex flex-col gap-1">
-              <span>{{ prospect.displayLocation }}</span>
-              <small class="text-night-500">{{ prospect.displayEstado }}</small>
+            <div class="flex flex-col">
+              <span class="text-sm text-gray-900">{{ prospect.displayLocation }}</span>
             </div>
           </td>
           <td>
-            <div class="flex flex-col gap-1">
-              <span>{{ prospect.assignedCompanyLabel || 'Sin asignar' }}</span>
-              <small class="text-night-500">
-                Origen: {{ prospect.originCompanyLabel || 'Sin registrar' }}
-              </small>
-            </div>
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+              {{ prospect.assignedCompanyLabel || 'Sin asignar' }}
+            </span>
+          </td>
+          <td>
+            <span
+              class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gray-100 text-gray-600">
+              {{ prospect.displayEstado }}
+            </span>
+          </td>
+          <td>
+            <span class="text-xs text-gray-500">
+              {{ prospect.updated_at ? (prospect.updated_at | date: 'dd MMM yyyy') : '---' }}
+            </span>
           </td>
           <td class="actions-column">
-            <button type="button" class="action-btn" (click)="startEdit(prospect)">Editar</button>
-            <button
-              type="button"
-              class="action-btn action-btn--danger"
-              (click)="deleteProspect(prospect)">
-              Eliminar
-            </button>
+            <div class="flex items-center justify-end gap-1">
+              <button class="icon-btn" (click)="startEdit(prospect)" title="Editar">
+                <lucide-icon name="pencil" class="size-4"></lucide-icon>
+              </button>
+              <button class="icon-btn icon-btn--danger" (click)="deleteProspect(prospect)" title="Eliminar">
+                <lucide-icon name="trash" class="size-4"></lucide-icon>
+              </button>
+            </div>
           </td>
         </tr>
       </ng-template>
     </p-table>
   </article>
 </section>
-
-<article *ngIf="showForm()" class="glass-card card-secondary form-panel">
-  <div class="form-panel__header">
-    <h2 class="text-xl font-semibold text-night-100">Editar Lead Prospecto</h2>
-    <button class="btn-secondary" type="button" (click)="resetForm()">Cerrar</button>
-  </div>
-
-  <div class="id-externo" *ngIf="selectedIdExterno()">
-    <span class="label">ID externo:</span>
-    <span class="value">{{ selectedIdExterno() }}</span>
-  </div>
-
-  <form class="prospect-form" [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div class="form-grid">
-      <div class="form-control">
-        <label for="nombreCompleto">Nombre completo</label>
-        <div class="input-wrapper">
-          <input
-            id="nombreCompleto"
-            type="text"
-            placeholder="Nombre Apellido"
-            formControlName="nombreCompleto" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="cargo">Cargo</label>
-        <div class="input-wrapper">
-          <input id="cargo" type="text" placeholder="VP Sales" formControlName="cargo" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="email">Email</label>
-        <div class="input-wrapper">
-          <input
-            id="email"
-            type="email"
-            placeholder="persona@empresa.com"
-            formControlName="email" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="perfilLinkedin">LinkedIn</label>
-        <div class="input-wrapper">
-          <input
-            id="perfilLinkedin"
-            type="url"
-            placeholder="https://linkedin.com/in/prospect"
-            formControlName="perfilLinkedin" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="location">Ubicación</label>
-        <div class="input-wrapper">
-          <input
-            id="location"
-            type="text"
-            placeholder="Bogotá, Colombia"
-            formControlName="location" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="estado">Estado</label>
-        <div class="input-wrapper">
-          <input id="estado" type="text" placeholder="Activo" formControlName="estado" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="fechaCreacionOrigen">Fecha creación origen</label>
-        <div class="input-wrapper">
-          <input
-            id="fechaCreacionOrigen"
-            type="datetime-local"
-            formControlName="fechaCreacionOrigen" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="companyId">ID compañía asignada</label>
-        <div class="input-wrapper">
-          <input
-            id="companyId"
-            type="number"
-            placeholder="12"
-            formControlName="companyId" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="companyOrigenLead">ID compañía origen</label>
-        <div class="input-wrapper">
-          <input
-            id="companyOrigenLead"
-            type="text"
-            placeholder="45"
-            formControlName="companyOrigenLead" />
-        </div>
-      </div>
-    </div>
-
-    <div class="form-control textarea">
-      <label for="about">Resumen</label>
-      <div class="input-wrapper textarea">
-        <textarea
-          id="about"
-          rows="3"
-          placeholder="Notas relevantes del prospecto"
-          formControlName="about"></textarea>
-      </div>
-    </div>
-
-    <div class="form-actions">
-      <button type="submit" class="btn-primary">Guardar cambios</button>
-      <button type="button" class="btn-secondary" (click)="resetForm()">Cancelar</button>
-    </div>
-  </form>
-</article>

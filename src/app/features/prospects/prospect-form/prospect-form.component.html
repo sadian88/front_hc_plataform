@@ -1,0 +1,80 @@
+<form class="prospect-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+        <div class="form-control">
+            <label for="nombreCompleto">Nombre completo</label>
+            <div class="input-wrapper">
+                <input id="nombreCompleto" type="text" placeholder="Nombre Apellido" formControlName="nombreCompleto" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="cargo">Cargo</label>
+            <div class="input-wrapper">
+                <input id="cargo" type="text" placeholder="VP Sales" formControlName="cargo" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="email">Email</label>
+            <div class="input-wrapper">
+                <input id="email" type="email" placeholder="persona@empresa.com" formControlName="email" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="perfilLinkedin">LinkedIn</label>
+            <div class="input-wrapper">
+                <input id="perfilLinkedin" type="url" placeholder="https://linkedin.com/in/prospect"
+                    formControlName="perfilLinkedin" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="location">Ubicación</label>
+            <div class="input-wrapper">
+                <input id="location" type="text" placeholder="Bogotá, Colombia" formControlName="location" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="estado">Estado</label>
+            <div class="input-wrapper">
+                <input id="estado" type="text" placeholder="Activo" formControlName="estado" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="fechaCreacionOrigen">Fecha creación origen</label>
+            <div class="input-wrapper">
+                <input id="fechaCreacionOrigen" type="datetime-local" formControlName="fechaCreacionOrigen" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="companyId">ID compañía asignada</label>
+            <div class="input-wrapper">
+                <input id="companyId" type="number" placeholder="12" formControlName="companyId" />
+            </div>
+        </div>
+
+        <div class="form-control">
+            <label for="companyOrigenLead">ID compañía origen</label>
+            <div class="input-wrapper">
+                <input id="companyOrigenLead" type="text" placeholder="45" formControlName="companyOrigenLead" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-control textarea">
+        <label for="about">Resumen</label>
+        <div class="input-wrapper textarea">
+            <textarea id="about" rows="3" placeholder="Notas relevantes del prospecto"
+                formControlName="about"></textarea>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="form.invalid">{{ submitLabel }}</button>
+        <button type="button" class="btn-secondary" (click)="cancel.emit()">Cancelar</button>
+    </div>
+</form>

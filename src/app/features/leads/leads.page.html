@@ -1,14 +1,20 @@
-<section class="space-y-6">
-  <header class="flex flex-wrap items-center justify-between gap-4">
+<section class="space-y-8 pb-12">
+  <header class="flex flex-wrap items-center justify-between gap-4 px-2">
     <div>
-      <p class="text-sm uppercase tracking-wide text-night-500">Pipeline</p>
-      <h1 class="text-3xl font-semibold text-night-100">User Interactions</h1>
-      <p class="text-night-400">{{ statusMessage() }}</p>
+      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">User Interactions</h1>
+      <p class="text-gray-500 font-medium">{{ statusMessage() }}</p>
     </div>
-    <button class="btn-secondary" type="button" (click)="refresh()">Refrescar lista</button>
+    <div class="flex gap-3">
+      <button
+        class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
+        (click)="refresh()">
+        <lucide-icon name="refresh-cw" class="size-4" [class.animate-spin]="loading()"></lucide-icon>
+        Refrescar
+      </button>
+    </div>
   </header>
 
-  <article class="glass-card card-primary space-y-4">
+  <article class="glass-card">
     <div *ngIf="hasServerFilter()" class="server-filter-banner">
       <span>
         Filtrando por <strong>source_scraping</strong> = {{ sourceScrapingFilter() }}
@@ -18,59 +24,44 @@
       </button>
     </div>
 
-    <div class="table-controls">
+    <div class="table-controls mb-6">
       <div class="control-field grow">
-        <label for="searchFilter">Buscar</label>
-        <input
-          id="searchFilter"
-          type="search"
-          placeholder="Nombre, rol, tags..."
-          [value]="searchTerm()"
-          (input)="onSearchInput($event)" />
+        <label for="searchFilter">Criterio de búsqueda</label>
+        <div class="relative">
+          <input id="searchFilter" type="search" placeholder="Nombre, rol, tags..." [value]="searchTerm()"
+            (input)="onSearchInput($event)" class="w-full pl-10" />
+          <lucide-icon name="search"
+            class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400"></lucide-icon>
+        </div>
       </div>
       <div class="control-field">
         <label for="companyFilter">Compañía</label>
-        <select
-          id="companyFilter"
-          [value]="companyFilter()"
-          (change)="onCompanyFilterChange($event)">
-          <option value="">Todas</option>
+        <select id="companyFilter" [value]="companyFilter()" (change)="onCompanyFilterChange($event)">
+          <option value="">Todas las compañías</option>
           <option *ngFor="let company of companyOptions()" [value]="company">
             {{ company }}
           </option>
         </select>
       </div>
       <div class="control-field">
-        <label for="countryFilter">País</label>
-        <select
-          id="countryFilter"
-          [value]="countryFilter()"
-          (change)="onCountryFilterChange($event)">
-          <option value="">Todos</option>
+        <label for="countryFilter">País / Región</label>
+        <select id="countryFilter" [value]="countryFilter()" (change)="onCountryFilterChange($event)">
+          <option value="">Cualquier ubicación</option>
           <option *ngFor="let country of countryOptions()" [value]="country">
             {{ country }}
           </option>
         </select>
       </div>
-      <button
-        type="button"
-        class="btn-secondary clear-filters"
-        (click)="clearFilters()"
-        [disabled]="!hasActiveFilters()">
-        Limpiar filtros
+      <button type="button"
+        class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 hover:text-hc-600 disabled:opacity-30 transition-colors"
+        (click)="clearFilters()" [disabled]="!hasActiveFilters()">
+        <lucide-icon name="x" class="size-4"></lucide-icon>
+        Limpiar
       </button>
     </div>
 
-    <p-table
-      #leadTable
-      class="lead-table"
-      [value]="tableRows()"
-      [loading]="loading()"
-      [paginator]="true"
-      [rows]="10"
-      [rowsPerPageOptions]="[10, 20, 50]"
-      [showCurrentPageReport]="true"
-      [globalFilterFields]="[
+    <p-table #leadTable class="lead-table" [value]="tableRows()" [loading]="loading()" [paginator]="true" [rows]="10"
+      [rowsPerPageOptions]="[10, 20, 50]" [showCurrentPageReport]="true" [globalFilterFields]="[
         'nombre',
         'cargo',
         'sourceCompany',
@@ -80,269 +71,107 @@
         'rol_funcional',
         'linkedin_url',
         'tags_internos'
-      ]"
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-      responsiveLayout="scroll"
+      ]" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" responsiveLayout="scroll"
       dataKey="id_lead">
       <ng-template pTemplate="header">
         <tr>
-          <th>Actualización</th>
-          <th>User Interaction</th>
-          <th>Source_Scraping</th>
+          <th>Usuario</th>
           <th>Empresa</th>
-          <th>Ubicacion</th>
-          <th>Rol</th>
-          <th>LinkedIn</th>
-          <th>Actualizacion</th>
-          <th class="actions-column">Acciones</th>
+          <th>Cargo</th>
+          <th>Ubicación</th>
+          <th>Score</th>
+          <th>Conversión</th>
+          <th>Fecha</th>
+          <th>Interacción</th>
+          <th class="actions-column">ACCIONES</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-lead>
         <tr>
           <td>
-            <div class="flex flex-col gap-1">
-              <span class="font-semibold text-night-100">
-                {{ lead.updated_at ? (lead.updated_at | date: 'mediumDate') : 'Sin datos' }}
-              </span>
-              <small class="text-night-500" *ngIf="lead.updated_at">
-                {{ lead.updated_at | date: 'shortTime' }}
-              </small>
-            </div>
-          </td>
-          <td>
-            <div class="flex flex-col gap-1">
-              <span class="font-semibold text-night-100">{{ lead.nombre || 'Sin nombre' }}</span>
-              <span class="text-secondary" *ngIf="lead.cargo">{{ lead.cargo }}</span>
-              <div class="tag-list" *ngIf="lead.tags_internos?.length">
-                <span class="tag-pill" *ngFor="let tag of lead.tags_internos">{{ tag }}</span>
+            <div class="flex items-center gap-3">
+              <div class="avatar-circle">
+                <lucide-icon name="user" class="size-4"></lucide-icon>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-gray-900 leading-tight">{{ lead.nombre || 'N/A' }}</span>
+                <div class="tag-list mt-1" *ngIf="lead.tags_internos?.length">
+                  <span class="tag-pill" *ngFor="let tag of lead.tags_internos">{{ tag }}</span>
+                </div>
               </div>
             </div>
           </td>
           <td>
-            <span>{{ lead.sourceScraping || 'Sin dato' }}</span>
-          </td>
-          <td>
-            <div class="flex flex-col gap-1">
-              <span>{{ lead.prospectCompany || 'Sin empresa' }}</span>
-              <small class="text-night-500" *ngIf="lead.sector_empresa">{{ lead.sector_empresa }}</small>
-              <small class="text-night-500" *ngIf="lead.tamano_empresa_empleados">
-                {{ lead.tamano_empresa_empleados }} colaboradores
-              </small>
+            <div class="flex flex-col">
+              <span class="font-semibold text-gray-700">{{ lead.prospectCompany || '---' }}</span>
+              <span class="text-xs text-gray-400" *ngIf="lead.sector_empresa">{{ lead.sector_empresa }}</span>
             </div>
           </td>
           <td>
-            <span>{{ lead.displayCountry || 'Pais no definido' }}</span>
-            <small class="block text-night-500" *ngIf="lead.ciudad">{{ lead.ciudad }}</small>
+            <span class="text-sm text-gray-600 font-medium">{{ lead.cargo || '---' }}</span>
           </td>
           <td>
-            <div class="flex flex-col gap-1">
-              <span>{{ lead.rol_funcional || 'Sin rol' }}</span>
-              <small class="text-night-500" *ngIf="lead.seniority">Seniority: {{ lead.seniority }}</small>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-gray-400 uppercase">{{ lead.pais ? lead.pais.substring(0,2) : 'GL'
+                }}</span>
+              <span class="text-sm text-gray-600">{{ lead.displayCountry || 'Global' }}</span>
             </div>
           </td>
           <td>
-            <a
-              class="link"
-              *ngIf="lead.linkedin_url"
-              [href]="lead.linkedin_url"
-              target="_blank"
-              rel="noopener">
-              Ver perfil
-            </a>
-            <span class="text-secondary" *ngIf="!lead.linkedin_url">Sin enlace</span>
+            <div class="flex flex-col gap-0.5">
+              <div class="flex text-yellow-400">
+                <lucide-icon name="star" class="size-3 fill-current" *ngFor="let i of [1,2,3,4]"></lucide-icon>
+                <lucide-icon name="star" class="size-3 text-gray-200 fill-current"></lucide-icon>
+              </div>
+              <span class="text-[10px] font-bold text-gray-400">{{ lead.score }}/100</span>
+            </div>
+          </td>
+          <td>
+            <div [ngSwitch]="lead.conversionStatus">
+              <span *ngSwitchCase="'si'" class="status-pill status-pill--si">
+                <lucide-icon name="check" class="size-3"></lucide-icon> SI
+              </span>
+              <span *ngSwitchCase="'no'" class="status-pill status-pill--no">
+                <lucide-icon name="x" class="size-3"></lucide-icon> NO
+              </span>
+              <span *ngSwitchDefault class="status-pill status-pill--pendiente">
+                <lucide-icon name="clock" class="size-3"></lucide-icon> Pendiente
+              </span>
+            </div>
+          </td>
+          <td class="whitespace-nowrap">
+            <span class="text-sm text-gray-600 font-medium">
+              {{ lead.updated_at ? (lead.updated_at | date: 'dd MMM yyyy') : '---' }}
+            </span>
+          </td>
+          <td>
+            <div class="flex items-center gap-2 text-gray-500" [ngSwitch]="lead.interactionType">
+              <ng-container *ngSwitchCase="'reaction'">
+                <lucide-icon name="heart" class="size-4 text-pink-500 fill-pink-500"></lucide-icon>
+                <span class="text-xs font-semibold">Reacción</span>
+              </ng-container>
+              <ng-container *ngSwitchCase="'comment'">
+                <lucide-icon name="message-square" class="size-4 text-purple-500"></lucide-icon>
+                <span class="text-xs font-semibold">Comentario</span>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <lucide-icon name="eye" class="size-4 text-blue-500"></lucide-icon>
+                <span class="text-xs font-semibold">Vista</span>
+              </ng-container>
+            </div>
           </td>
           <td class="actions-column">
-            <button type="button" class="action-btn" (click)="startEdit(lead)">Editar</button>
-            <button type="button" class="action-btn action-btn--danger" (click)="deleteLead(lead)">
-              Eliminar
-            </button>
+            <div class="flex items-center justify-end gap-1">
+              <button type="button" class="icon-btn" (click)="startEdit(lead)" title="Editar">
+                <lucide-icon name="pencil" class="size-4"></lucide-icon>
+              </button>
+              <button type="button" class="icon-btn icon-btn--danger" (click)="deleteLead(lead)" title="Eliminar">
+                <lucide-icon name="trash" class="size-4"></lucide-icon>
+              </button>
+            </div>
           </td>
         </tr>
       </ng-template>
     </p-table>
   </article>
 </section>
-
-<article *ngIf="showForm()" class="glass-card card-secondary form-panel">
-  <div class="form-panel__header">
-    <h2 class="text-xl font-semibold text-night-100">Editar User Interaction</h2>
-    <button class="btn-secondary" type="button" (click)="resetForm()">Cerrar</button>
-  </div>
-
-  <form class="lead-form" [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div class="form-grid">
-      <div class="form-control">
-        <label for="nombre">Nombre</label>
-        <div class="input-wrapper">
-          <input id="nombre" type="text" placeholder="Nathalie Vega" formControlName="nombre" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="cargo">Cargo</label>
-        <div class="input-wrapper">
-          <input id="cargo" type="text" placeholder="CMO" formControlName="cargo" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="seniority">Seniority</label>
-        <div class="input-wrapper">
-          <input id="seniority" type="text" placeholder="Senior" formControlName="seniority" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="rolFuncional">Rol funcional</label>
-        <div class="input-wrapper">
-          <input
-            id="rolFuncional"
-            type="text"
-            placeholder="Marketing Ops"
-            formControlName="rolFuncional" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="empresa">Empresa</label>
-        <div class="input-wrapper">
-          <input id="empresa" type="text" placeholder="HubCapture" formControlName="empresa" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="sectorEmpresa">Sector</label>
-        <div class="input-wrapper">
-          <input
-            id="sectorEmpresa"
-            type="text"
-            placeholder="Tecnologia"
-            formControlName="sectorEmpresa" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="pais">Pais</label>
-        <div class="input-wrapper">
-          <input id="pais" type="text" placeholder="Colombia" formControlName="pais" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="ciudad">Ciudad</label>
-        <div class="input-wrapper">
-          <input id="ciudad" type="text" placeholder="Bogota" formControlName="ciudad" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="companyId">ID compania</label>
-        <div class="input-wrapper">
-          <input id="companyId" type="number" placeholder="12" formControlName="companyId" />
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="tamanoEmpresaEmpleados">Tamano (empleados)</label>
-        <div class="input-wrapper">
-          <input
-            id="tamanoEmpresaEmpleados"
-            type="number"
-            placeholder="250"
-            formControlName="tamanoEmpresaEmpleados" />
-        </div>
-      </div>
-    </div>
-
-    <div class="form-grid">
-      <div class="form-control textarea">
-        <label for="headlinePerfil">Headline</label>
-        <div class="input-wrapper textarea">
-          <textarea
-            id="headlinePerfil"
-            rows="2"
-            placeholder="VP Growth en HubCapture"
-            formControlName="headlinePerfil"></textarea>
-        </div>
-      </div>
-
-      <div class="form-control textarea">
-        <label for="resumenPerfil">Resumen</label>
-        <div class="input-wrapper textarea">
-          <textarea
-            id="resumenPerfil"
-            rows="3"
-            placeholder="Resumen del perfil"
-            formControlName="resumenPerfil"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-grid">
-      <div class="form-control textarea">
-        <label for="temasClavePublicaciones">Temas clave</label>
-        <div class="input-wrapper textarea">
-          <textarea
-            id="temasClavePublicaciones"
-            rows="3"
-            placeholder="Go-to-market&#10;Automatizacion"
-            formControlName="temasClavePublicaciones"></textarea>
-        </div>
-        <small class="helper-text">Separa los valores por coma o salto de linea.</small>
-      </div>
-
-      <div class="form-control textarea">
-        <label for="ultimasPublicacionesTexto">Ultimas publicaciones</label>
-        <div class="input-wrapper textarea">
-          <textarea
-            id="ultimasPublicacionesTexto"
-            rows="3"
-            placeholder="Articulo sobre revenue ops"
-            formControlName="ultimasPublicacionesTexto"></textarea>
-        </div>
-        <small class="helper-text">Cada linea se convertira en un item.</small>
-      </div>
-    </div>
-
-    <div class="form-grid">
-      <div class="form-control textarea">
-        <label for="interaccionesRelevantes">Interacciones</label>
-        <div class="input-wrapper textarea">
-          <textarea
-            id="interaccionesRelevantes"
-            rows="3"
-            placeholder="Comento en demo del 12/07"
-            formControlName="interaccionesRelevantes"></textarea>
-        </div>
-      </div>
-
-      <div class="form-control textarea">
-        <label for="tagsInternos">Tags internos</label>
-        <div class="input-wrapper textarea">
-          <textarea
-            id="tagsInternos"
-            rows="3"
-            placeholder="ICP alto&#10;Newsletter"
-            formControlName="tagsInternos"></textarea>
-        </div>
-        <small class="helper-text">Ejemplo: ICP alto, Newsletter, ABM.</small>
-      </div>
-    </div>
-
-    <div class="form-control">
-      <label for="linkedinUrl">LinkedIn URL</label>
-      <div class="input-wrapper">
-        <input
-          id="linkedinUrl"
-          type="url"
-          placeholder="https://linkedin.com/in/usuario"
-          formControlName="linkedinUrl" />
-      </div>
-    </div>
-
-    <div class="form-actions">
-      <button type="submit" class="btn-primary">Guardar cambios</button>
-      <button type="button" class="btn-secondary" (click)="resetForm()">Cancelar</button>
-    </div>
-  </form>
-</article>

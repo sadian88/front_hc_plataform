@@ -1,4 +1,19 @@
-import { icons } from 'lucide-angular';
+import {
+  icons,
+  User,
+  Linkedin,
+  Pencil,
+  Trash,
+  ArrowLeft,
+  Star,
+  Check,
+  Clock,
+  Heart,
+  MessageSquare,
+  Eye,
+  Link,
+  ExternalLink
+} from 'lucide-angular';
 
 const {
   ShieldCheck,
@@ -10,7 +25,16 @@ const {
   Users,
   Bell,
   Settings,
-  Search
+  Search,
+  TrendingUp,
+  TrendingDown,
+  Download,
+  Plus,
+  RefreshCw,
+  X,
+  LogOut,
+  Inbox,
+  Building2
 } = icons;
 
 export const lucideCoreIcons = {
@@ -18,10 +42,32 @@ export const lucideCoreIcons = {
   Mail,
   Lock,
   ArrowRight,
+  ArrowLeft,
   LayoutDashboard,
   Activity,
   Users,
+  User,
   Bell,
   Settings,
-  Search
+  Search,
+  TrendingUp,
+  TrendingDown,
+  Download,
+  Plus,
+  RefreshCw,
+  X,
+  LogOut,
+  Inbox,
+  Building2,
+  Linkedin,
+  Pencil,
+  Trash,
+  Star,
+  Check,
+  Clock,
+  Heart,
+  MessageSquare,
+  Eye,
+  Link,
+  ExternalLink
 };

@@ -3,6 +3,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { SearchResultFormComponent } from './search-result-form/search-result-form.component';
+import { LucideAngularModule } from 'lucide-angular';
 import {
   SearchResult,
   SearchResultPayload,
@@ -12,7 +13,7 @@ import {
 @Component({
   selector: 'app-search-result-editor-page',
   standalone: true,
-  imports: [CommonModule, SearchResultFormComponent],
+  imports: [CommonModule, SearchResultFormComponent, LucideAngularModule],
   templateUrl: './search-result-editor.page.html',
   styleUrl: './search-result-editor.page.scss'
 })

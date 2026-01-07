@@ -1,0 +1,19 @@
+<section class="space-y-8 pb-12">
+    <header class="flex flex-wrap items-center justify-between gap-4 px-2">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">{{ submitLabel() }} interacción</h1>
+            <p class="text-gray-500 font-medium">{{ statusMessage() }}</p>
+        </div>
+        <button
+            class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
+            type="button" (click)="goBack()">
+            <lucide-icon name="arrow-left" class="size-4"></lucide-icon>
+            Volver
+        </button>
+    </header>
+
+    <article class="glass-card editor-card">
+        <app-lead-form [lead]="lead()" [submitLabel]="submitLabel()" (save)="handleSave($event)"
+            (cancel)="goBack()"></app-lead-form>
+    </article>
+</section>

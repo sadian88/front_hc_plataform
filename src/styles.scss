@@ -9,15 +9,15 @@
 
 @layer base {
   :root {
-    --color-bg: #f3f4f6;
+    --color-bg: #f8fafc; // Lighter but more premium cool gray
     --color-card: #ffffff;
-    --color-card-muted: #f9fafb;
-    --color-border: #e5e7eb;
-    --color-border-soft: #d1d5db;
-    --color-text-strong: #1f2937;
-    --color-text-main: #374151;
-    --color-text-secondary: #4b5563;
-    --color-text-muted: #6b7280;
+    --color-card-muted: #f1f5f9;
+    --color-border: #e2e8f0;
+    --color-border-soft: #cbd5e1;
+    --color-text-strong: #0f172a;
+    --color-text-main: #334155;
+    --color-text-secondary: #64748b;
+    --color-text-muted: #94a3b8;
     --color-accent: #059669; // HubCapture Green
     --color-accent-light: #10b981;
     --color-accent-dark: #047857;
@@ -48,11 +48,16 @@
 
 @layer components {
   .glass-card {
-    border-radius: 1.25rem;
+    border-radius: 1.5rem;
     background: var(--color-card);
-    padding: 2rem;
+    padding: 2.5rem;
     border: 1px solid var(--color-border);
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+    }
   }
 
   .card-primary {

@@ -8,29 +8,35 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
   .p-datatable-header {
-    background: #ffffff;
+    background: transparent;
     color: var(--color-text-strong);
-    padding: 1.5rem 0;
-    font-weight: 700;
+    padding: 1rem 0 2rem 0;
+    font-weight: 800;
   }
 
   .p-datatable-thead>tr>th {
-    background: #f9fafb;
+    background: #f1f5f9;
     color: var(--color-text-secondary);
     border: none;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 1rem 1.25rem;
+    letter-spacing: 0.1em;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 2px solid var(--color-border);
   }
 
   .p-datatable-tbody>tr>td {
-    background: #fff;
+    background: #ffffff;
     border-bottom: 1px solid #f1f5f9;
     color: var(--color-text-main);
-    padding: 1.25rem;
+    padding: 1.5rem;
     vertical-align: middle;
+    transition: background 0.2s;
+  }
+
+  .p-datatable-tbody>tr:hover>td {
+    background: #f8fafc;
   }
 
   .p-datatable-tbody>tr:last-child>td {
@@ -39,8 +45,8 @@
 
   .p-paginator {
     background: #ffffff;
-    border-top: 1px solid #f1f5f9;
-    padding: 1rem;
+    border-top: 1px solid var(--color-border);
+    padding: 1.25rem;
     font-size: 0.875rem;
   }
 

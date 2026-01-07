@@ -1,0 +1,18 @@
+<section class="company-editor">
+  <header class="editor-header">
+    <div>
+      <p class="eyebrow">Companias</p>
+      <h1>{{ submitLabel() }} compania</h1>
+      <p class="status">{{ statusMessage() }}</p>
+    </div>
+    <button class="btn-secondary" type="button" (click)="goBack()">Volver</button>
+  </header>
+
+  <article class="glass-card card-secondary editor-card">
+    <app-company-form
+      [company]="company()"
+      [submitLabel]="submitLabel()"
+      (save)="handleSave($event)"
+      (cancel)="goBack()"></app-company-form>
+  </article>
+</section>

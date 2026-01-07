@@ -29,6 +29,20 @@ export const routes: Routes = [
           import('./features/dashboard/dashboard.page').then((m) => m.DashboardPageComponent)
       },
       {
+        path: 'companies/new',
+        loadComponent: () =>
+          import('./features/companies/company-editor.page').then(
+            (m) => m.CompanyEditorPageComponent
+          )
+      },
+      {
+        path: 'companies/:id/edit',
+        loadComponent: () =>
+          import('./features/companies/company-editor.page').then(
+            (m) => m.CompanyEditorPageComponent
+          )
+      },
+      {
         path: 'companies',
         loadComponent: () =>
           import('./features/companies/companies.page').then((m) => m.CompaniesPageComponent)
@@ -42,6 +56,13 @@ export const routes: Routes = [
         path: 'lead-prospecto',
         loadComponent: () =>
           import('./features/prospects/prospects.page').then((m) => m.ProspectsPageComponent)
+      },
+      {
+        path: 'company-prospectos/:companyId/:linkKey/edit',
+        loadComponent: () =>
+          import('./features/search-results/search-result-editor.page').then(
+            (m) => m.SearchResultEditorPageComponent
+          )
       },
       {
         path: 'company-prospectos',

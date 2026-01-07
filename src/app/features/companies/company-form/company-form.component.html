@@ -1,0 +1,352 @@
+<div class="tab-bar">
+  <button
+    type="button"
+    class="tab-button"
+    [class.active]="activeTab() === 'general'"
+    (click)="setTab('general')">
+    General
+  </button>
+  <button
+    type="button"
+    class="tab-button"
+    [class.active]="activeTab() === 'icp'"
+    (click)="setTab('icp')">
+    ICP
+  </button>
+  <button
+    type="button"
+    class="tab-button"
+    [class.active]="activeTab() === 'buyer'"
+    (click)="setTab('buyer')">
+    Buyer Persona
+  </button>
+</div>
+
+<form class="company-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div *ngIf="activeTab() === 'general'" class="form-section">
+    <div class="section-header">
+      <h3>Informacion General</h3>
+      <p>Datos base de la compania y enlaces principales.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-control">
+        <label for="companyName">Nombre</label>
+        <div class="input-wrapper">
+          <input
+            id="companyName"
+            type="text"
+            placeholder="HubCapture Inc."
+            formControlName="companyName" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="companyUrlProfile">URL corporativa</label>
+        <div class="input-wrapper">
+          <input
+            id="companyUrlProfile"
+            type="url"
+            placeholder="https://hubcapture.com/about"
+            formControlName="companyUrlProfile" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="companySegment">Segmento</label>
+        <div class="input-wrapper">
+          <input
+            id="companySegment"
+            type="text"
+            placeholder="Automatizacion industrial"
+            formControlName="companySegment" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="customerUrlProfile">URL cliente</label>
+        <div class="input-wrapper">
+          <input
+            id="customerUrlProfile"
+            type="url"
+            placeholder="https://cliente.com/perfil"
+            formControlName="customerUrlProfile" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="companyIcp">ICP / Comentarios</label>
+        <div class="input-wrapper textarea">
+          <textarea
+            id="companyIcp"
+            rows="3"
+            placeholder="Detalle del ICP o notas relevantes"
+            formControlName="companyIcp"></textarea>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="creationDate">Fecha creacion</label>
+        <div class="input-wrapper">
+          <input id="creationDate" type="date" formControlName="creationDate" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab() === 'icp'" class="form-section">
+    <div class="section-header">
+      <h3>ICP - Ideal Customer Profile</h3>
+      <p>Define los criterios del cliente ideal para calificar leads.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-control">
+        <label for="icpIndustries">Industrias Objetivo</label>
+        <div class="input-wrapper">
+          <select id="icpIndustries" multiple formControlName="icpIndustries">
+            <option *ngFor="let industry of industryOptions" [value]="industry">
+              {{ industry }}
+            </option>
+          </select>
+        </div>
+        <small class="helper-text">Mantener Ctrl (Cmd) para multiples opciones.</small>
+      </div>
+
+      <div class="form-control form-control--wide">
+        <label for="icpCompanySize">Tamano de la Empresa (Numero de Empleados)</label>
+        <div class="range-wrapper">
+          <input
+            id="icpCompanySize"
+            type="range"
+            [min]="0"
+            [max]="companySizeOptions.length - 1"
+            [value]="companySizeIndex()"
+            (input)="onCompanySizeChange($event)" />
+          <div class="range-labels">
+            <span
+              *ngFor="let size of companySizeOptions; let idx = index"
+              [class.active]="idx === companySizeIndex()">
+              {{ size }}
+            </span>
+          </div>
+        </div>
+        <span class="range-selected">{{ getCompanySizeLabel() }}</span>
+      </div>
+
+      <div class="form-control">
+        <div class="label-row">
+          <label for="icpTargetCountry">Pais Objetivo</label>
+        </div>
+        <div class="input-wrapper">
+          <input
+            id="icpTargetCountry"
+            type="text"
+            placeholder="Colombia"
+            formControlName="icpTargetCountry" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <div class="label-row">
+          <label for="icpTargetCity">Ciudad Especifica</label>
+          <span class="optional-pill">Opcional</span>
+        </div>
+        <div class="input-wrapper">
+          <input
+            id="icpTargetCity"
+            type="text"
+            placeholder="Bogota, Ciudad de Mexico, Buenos Aires"
+            formControlName="icpTargetCity" />
+        </div>
+      </div>
+
+      <div class="form-control form-control--wide">
+        <div class="label-row">
+          <label for="icpIndustryPain">Dolor/Problema Principal de la Industria</label>
+          <button class="btn-secondary btn-small" type="button" disabled>Generar con IA</button>
+        </div>
+        <div class="input-wrapper textarea">
+          <textarea
+            id="icpIndustryPain"
+            rows="4"
+            placeholder="Describe el principal dolor de la industria objetivo."
+            formControlName="icpIndustryPain"></textarea>
+        </div>
+      </div>
+
+      <div class="form-control form-control--wide">
+        <div class="label-row">
+          <label for="icpCompetitorsInput">Competidores</label>
+          <span class="optional-pill">Opcional</span>
+        </div>
+        <div class="input-wrapper">
+          <input
+            id="icpCompetitorsInput"
+            type="url"
+            placeholder="Presiona Enter para agregar URL..."
+            #competitorInput
+            (keydown.enter)="addTag('icpCompetitors', competitorInput); $event.preventDefault()" />
+        </div>
+        <div class="tag-list" *ngIf="getTags('icpCompetitors').length">
+          <span class="tag-pill" *ngFor="let tag of getTags('icpCompetitors')">
+            {{ tag }}
+            <button type="button" class="tag-remove" (click)="removeTag('icpCompetitors', tag)">
+              &times;
+            </button>
+          </span>
+        </div>
+        <small class="helper-text">Agregar URLs de competidores directos.</small>
+      </div>
+
+      <div class="form-control form-control--wide">
+        <div class="label-row">
+          <label for="icpCurrentCustomersInput">Clientes Actuales</label>
+          <span class="optional-pill">Opcional</span>
+        </div>
+        <div class="input-wrapper">
+          <input
+            id="icpCurrentCustomersInput"
+            type="url"
+            placeholder="Presiona Enter para agregar URL..."
+            #customerInput
+            (keydown.enter)="addTag('icpCurrentCustomers', customerInput); $event.preventDefault()" />
+        </div>
+        <div class="tag-list" *ngIf="getTags('icpCurrentCustomers').length">
+          <span class="tag-pill" *ngFor="let tag of getTags('icpCurrentCustomers')">
+            {{ tag }}
+            <button type="button" class="tag-remove" (click)="removeTag('icpCurrentCustomers', tag)">
+              &times;
+            </button>
+          </span>
+        </div>
+        <small class="helper-text">Agregar URLs o perfiles de clientes actuales.</small>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab() === 'buyer'" class="form-section">
+    <div class="section-header">
+      <h3>Buyer Persona - Tu Cliente Ideal</h3>
+      <p>Define el perfil de la persona que toma la decision de compra.</p>
+    </div>
+
+    <div class="persona-header">
+      <div class="persona-avatar">{{ getBuyerInitials() }}</div>
+      <div class="persona-summary">
+        <h4>{{ form.get('buyerPersonaName')?.value || 'Nombre del comprador' }}</h4>
+        <p>{{ getBuyerSubtitle() }}</p>
+        <span class="persona-meta">{{ getBuyerMeta() }}</span>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-control">
+        <label for="buyerPersonaName">Nombre de la Persona</label>
+        <div class="input-wrapper">
+          <input
+            id="buyerPersonaName"
+            type="text"
+            placeholder="Pablo Garcia"
+            formControlName="buyerPersonaName" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="buyerPersonaAge">Edad</label>
+        <div class="input-wrapper">
+          <input
+            id="buyerPersonaAge"
+            type="number"
+            min="0"
+            placeholder="38"
+            formControlName="buyerPersonaAge" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="buyerPersonaRole">Cargo/Posicion</label>
+        <div class="input-wrapper">
+          <input
+            id="buyerPersonaRole"
+            type="text"
+            placeholder="Director de Marketing"
+            formControlName="buyerPersonaRole" />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="buyerPersonaCompanyType">Tipo de Empresa</label>
+        <div class="input-wrapper">
+          <input
+            id="buyerPersonaCompanyType"
+            type="text"
+            placeholder="Empresa Mediana Tech"
+            formControlName="buyerPersonaCompanyType" />
+        </div>
+      </div>
+
+      <div class="form-control form-control--wide">
+        <label for="buyerPersonaLocation">Ubicacion</label>
+        <div class="input-wrapper">
+          <input
+            id="buyerPersonaLocation"
+            type="text"
+            placeholder="Bogota, Colombia"
+            formControlName="buyerPersonaLocation" />
+        </div>
+      </div>
+
+      <div class="form-control form-control--wide">
+        <label for="buyerPersonaGoals">Objetivos Profesionales</label>
+        <div class="input-wrapper textarea">
+          <textarea
+            id="buyerPersonaGoals"
+            rows="4"
+            placeholder="Enumera objetivos o metas profesionales."
+            formControlName="buyerPersonaGoals"></textarea>
+        </div>
+      </div>
+
+      <div class="form-control form-control--wide">
+        <label for="buyerPersonaPainPoints">Desafios y Puntos de Dolor</label>
+        <div class="input-wrapper textarea">
+          <textarea
+            id="buyerPersonaPainPoints"
+            rows="4"
+            placeholder="Describe retos o dolores principales."
+            formControlName="buyerPersonaPainPoints"></textarea>
+        </div>
+      </div>
+
+      <div class="form-control form-control--wide">
+        <label for="buyerPersonaBuyingBehavior">Comportamiento de Compra</label>
+        <div class="input-wrapper textarea">
+          <textarea
+            id="buyerPersonaBuyingBehavior"
+            rows="4"
+            placeholder="Como compra, como investiga y toma decisiones."
+            formControlName="buyerPersonaBuyingBehavior"></textarea>
+        </div>
+      </div>
+
+      <div class="form-control form-control--wide">
+        <label>Canales de Comunicacion Preferidos</label>
+        <div class="channel-list">
+          <label class="channel-item" *ngFor="let channel of buyerChannelOptions">
+            <input
+              type="checkbox"
+              [checked]="isBuyerChannelSelected(channel)"
+              (change)="toggleBuyerChannel(channel, $event)" />
+            <span>{{ channel }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn-primary">{{ submitLabel }}</button>
+    <button type="button" class="btn-secondary" (click)="cancel.emit()">Cancelar</button>
+  </div>
+</form>

@@ -1,0 +1,18 @@
+<section class="result-editor">
+  <header class="editor-header">
+    <div>
+      <p class="eyebrow">Company_Prospectos</p>
+      <h1>Editar resultado</h1>
+      <p class="status">{{ statusMessage() }}</p>
+    </div>
+    <button class="btn-secondary" type="button" (click)="goBack()">Volver</button>
+  </header>
+
+  <article class="glass-card card-secondary editor-card">
+    <app-search-result-form
+      [result]="result()"
+      [submitLabel]="submitLabel()"
+      (save)="handleSave($event)"
+      (cancel)="goBack()"></app-search-result-form>
+  </article>
+</section>

@@ -102,6 +102,10 @@
           </td>
           <td class="actions-column">
             <div class="flex items-center justify-end gap-1">
+              <button class="scrape-btn" (click)="startScraping(company)" title="Iniciar Scraping">
+                <lucide-icon name="refresh-cw" class="size-4"></lucide-icon>
+                Scraping
+              </button>
               <button class="icon-btn" (click)="viewUserInteractions(company)" title="Ver User Interactions">
                 <lucide-icon name="users" class="size-4"></lucide-icon>
               </button>

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { LucideAngularModule } from 'lucide-angular';
 import { Table, TableModule } from 'primeng/table';
 import {
@@ -18,7 +17,6 @@ import {
 })
 export class CompaniesPageComponent implements OnInit {
   private readonly companyService = inject(CompanyService);
-  private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
 
   @ViewChild('dt') dt: Table | undefined;
@@ -83,10 +81,8 @@ export class CompaniesPageComponent implements OnInit {
   startScraping(company: Company): void {
     const label = company.company_name || `ID ${company.id}`;
     this.statusMessage.set(`Iniciando scraping para ${label}...`);
-    this.http
-      .post('https://n8n.hubcapture.com/webhook-test/activate-scraping', {
-        company_id: company.id
-      })
+    this.companyService
+      .startScraping(company.id)
       .subscribe({
         next: () => this.statusMessage.set(`Scraping iniciado para ${label}.`),
         error: () => this.statusMessage.set(`No se pudo iniciar el scraping para ${label}.`)

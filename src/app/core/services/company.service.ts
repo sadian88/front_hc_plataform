@@ -103,4 +103,8 @@ export class CompanyService {
       )
     );
   }
+
+  startScraping(id: number): Observable<ApiResponse<{ status: number }>> {
+    return this.http.post<ApiResponse<{ status: number }>>(`${this.baseUrl}/${id}/scraping`, {});
+  }
 }

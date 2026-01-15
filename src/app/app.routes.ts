@@ -82,6 +82,13 @@ export const routes: Routes = [
           import('./features/search-results/search-results.page').then(
             (m) => m.SearchResultsPageComponent
           )
+      },
+      {
+        path: 'analisis-leads-icp',
+        loadComponent: () =>
+          import('./features/analisis-leads-icp/analisis-leads-icp.page').then(
+            (m) => m.AnalisisLeadsIcpPageComponent
+          )
       }
     ]
   },

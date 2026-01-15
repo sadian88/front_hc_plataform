@@ -72,6 +72,12 @@ export class CompaniesPageComponent implements OnInit {
     });
   }
 
+  viewAnalisisLeadsIcp(company: Company): void {
+    this.router.navigate(['/app/analisis-leads-icp'], {
+      queryParams: { sourceScraping: company.id }
+    });
+  }
+
   resetForm(): void {
     this.router.navigate(['/app/companies']);
   }

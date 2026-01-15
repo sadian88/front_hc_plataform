@@ -20,7 +20,8 @@ export class AuthShellComponent {
     { icon: 'shield-check', label: 'Compañias', path: '/app/companies' },
     { icon: 'users', label: 'User Interactions', path: '/app/user-interactions' },
     { icon: 'activity', label: 'Lead Prospecto', path: '/app/lead-prospecto' },
-    { icon: 'search', label: 'Company_Prospectos', path: '/app/company-prospectos' }
+    { icon: 'search', label: 'Company_Prospectos', path: '/app/company-prospectos' },
+    { icon: 'inbox', label: 'Analisis Leads ICP', path: '/app/analisis-leads-icp' }
   ];
 
   readonly user = computed(() => this.authState.session()?.user);
@@ -39,3 +40,5 @@ export class AuthShellComponent {
     this.router.navigateByUrl('/login');
   }
 }
+
+

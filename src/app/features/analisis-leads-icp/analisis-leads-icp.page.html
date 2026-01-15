@@ -1,0 +1,290 @@
+<section class="space-y-8 pb-12">
+  <header class="flex flex-wrap items-center justify-between gap-4 px-2">
+    <div>
+      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Analisis Leads ICP</h1>
+      <p class="text-gray-500 font-medium">{{ statusMessage() }}</p>
+    </div>
+    <div class="flex gap-3">
+      <button
+        class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
+        (click)="refresh()">
+        <lucide-icon name="refresh-cw" class="size-4" [class.animate-spin]="loading()"></lucide-icon>
+        Refrescar
+      </button>
+    </div>
+  </header>
+
+  <article class="glass-card">
+    <div *ngIf="hasServerFilter()" class="server-filter-banner">
+      <span>
+        Filtrando por <strong>source_scraping</strong> = {{ sourceScrapingFilter() }}
+      </span>
+      <button type="button" class="btn-secondary" (click)="clearSourceScrapingFilter()">
+        Ver todos
+      </button>
+    </div>
+
+    <div class="table-controls mb-6">
+      <div class="control-field grow">
+        <label for="searchFilter">Criterio de busqueda</label>
+        <div class="relative">
+          <input
+            id="searchFilter"
+            type="search"
+            placeholder="Empresa, analisis, decision..."
+            [value]="searchTerm()"
+            (input)="onSearchInput($event)"
+            class="w-full pl-10" />
+          <lucide-icon
+            name="search"
+            class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400"></lucide-icon>
+        </div>
+      </div>
+      <div class="control-field">
+        <label for="companyFilter">Origen</label>
+        <select id="companyFilter" [value]="companyFilter()" (change)="onCompanyFilterChange($event)">
+          <option value="">Todos</option>
+          <option *ngFor="let company of companyOptions()" [value]="company">
+            {{ company }}
+          </option>
+        </select>
+      </div>
+      <div class="control-field">
+        <label for="decisionFilter">Decision</label>
+        <select id="decisionFilter" [value]="decisionFilter()" (change)="onDecisionFilterChange($event)">
+          <option value="">Todas</option>
+          <option *ngFor="let decision of decisionOptions()" [value]="decision">
+            {{ decision }}
+          </option>
+        </select>
+      </div>
+      <button
+        type="button"
+        class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 hover:text-hc-600 disabled:opacity-30 transition-colors"
+        (click)="clearFilters()"
+        [disabled]="!hasActiveFilters()">
+        <lucide-icon name="x" class="size-4"></lucide-icon>
+        Limpiar
+      </button>
+    </div>
+
+    <p-table
+      #analisisTable
+      class="analisis-table"
+      [value]="tableRows()"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [showCurrentPageReport]="true"
+      [globalFilterFields]="[
+        'companyLabel',
+        'nombre_empresa',
+        'descripcion_corta',
+        'analisis_final',
+        'decision',
+        'displayDecision',
+        'sourceScraping',
+        'painPointsText'
+      ]"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+      responsiveLayout="scroll"
+      dataKey="id">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="col-fecha">Fecha</th>
+          <th class="col-score">Score</th>
+          <th class="col-origen">Origen</th>
+          <th class="col-empresa">Empresa</th>
+          <th class="col-pain">Puntos Dolor</th>
+          <th class="col-analisis">Analisis</th>
+          <th class="col-decision">Decision</th>
+          <th class="col-links">Links</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-row>
+        <tr>
+          <td class="col-fecha whitespace-nowrap">
+            <span class="text-sm text-gray-600 font-medium">
+              {{ row.fecha_creacion ? (row.fecha_creacion | date: 'dd MMM yyyy') : '---' }}
+            </span>
+          </td>
+          <td class="col-score">
+            <button
+              type="button"
+              class="score-button"
+              (click)="openScoreDetails(row)"
+              [attr.title]="row.totalScore !== null ? 'Score total: ' + row.totalScore : 'Score sin datos'">
+              <div class="star-rating">
+                <lucide-icon
+                  *ngFor="let i of [1, 2, 3, 4, 5]"
+                  name="star"
+                  class="size-4 star-icon"
+                  [ngClass]="{ 'is-filled': i <= row.scoreRating }"></lucide-icon>
+              </div>
+              <span class="score-text">{{ row.scoreRating }}/5</span>
+            </button>
+          </td>
+          <td class="col-origen">
+            <span class="font-semibold text-gray-800">{{ row.companyLabel }}</span>
+          </td>
+          <td class="col-empresa">
+            <div class="flex flex-col gap-1">
+              <span class="font-semibold text-gray-800 leading-tight line-clamp-2" title="{{ row.nombre_empresa }}">
+                {{ row.nombre_empresa || 'Sin empresa' }}
+              </span>
+              <span
+                class="text-xs text-gray-500 line-clamp-2"
+                *ngIf="row.descripcion_corta"
+                [attr.title]="row.descripcion_corta">
+                {{ row.descripcion_corta }}
+              </span>
+              <span class="text-xs text-gray-400" *ngIf="!row.descripcion_corta">Sin descripcion</span>
+            </div>
+          </td>
+          <td class="col-pain">
+            <button
+              type="button"
+              class="detail-link"
+              (click)="openAnalisisDetails(row)"
+              [disabled]="!row.painPointsText && !row.analisis_final">
+              <span
+                class="text-xs text-gray-600 line-clamp-2 pain-points-text"
+                *ngIf="row.painPointsText"
+                [attr.title]="row.painPointsText">
+                {{ row.painPointsText }}
+              </span>
+              <span class="text-xs text-gray-400" *ngIf="!row.painPointsText">Sin registros</span>
+              <span class="detail-action">Ver detalle</span>
+            </button>
+          </td>
+          <td class="col-analisis">
+            <button
+              type="button"
+              class="detail-link"
+              (click)="openAnalisisDetails(row)"
+              [disabled]="!row.analisis_final && !row.painPointsText">
+              <span
+                class="text-xs text-gray-500 line-clamp-3"
+                *ngIf="row.analisis_final"
+                [attr.title]="row.analisis_final">
+                {{ row.analisis_final }}
+              </span>
+              <span class="text-xs text-gray-400" *ngIf="!row.analisis_final">Sin analisis</span>
+              <span class="detail-action">Ver detalle</span>
+            </button>
+          </td>
+          <td class="col-decision">
+            <span
+              class="status-pill"
+              [class.status-pill--si]="row.decisionStatus === 'si'"
+              [class.status-pill--no]="row.decisionStatus === 'no'"
+              [class.status-pill--pendiente]="row.decisionStatus === 'pendiente'">
+              {{ row.displayDecision }}
+            </span>
+          </td>
+          <td class="col-links">
+            <div class="flex items-center gap-2">
+              <a
+                *ngIf="row.linkedin_url"
+                [href]="row.linkedin_url"
+                target="_blank"
+                rel="noopener"
+                class="icon-link"
+                title="LinkedIn">
+                <lucide-icon name="linkedin" class="size-4"></lucide-icon>
+              </a>
+              <a
+                *ngIf="row.web_url"
+                [href]="row.web_url"
+                target="_blank"
+                rel="noopener"
+                class="icon-link"
+                title="Web">
+                <lucide-icon name="link" class="size-4"></lucide-icon>
+              </a>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </article>
+</section>
+
+<ng-container *ngIf="scoreModalOpen() && selectedScoreRow() as row">
+  <div class="modal-backdrop" (click)="closeScoreDetails()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <header class="modal-header">
+        <div>
+          <p class="modal-eyebrow">Detalle de score</p>
+          <h3 class="modal-title">{{ row.nombre_empresa || 'Sin empresa' }}</h3>
+        </div>
+        <button type="button" class="modal-close" (click)="closeScoreDetails()">&times;</button>
+      </header>
+      <div class="modal-body">
+        <div class="score-summary">
+          <div class="score-summary__stars">
+            <lucide-icon
+              *ngFor="let i of [1, 2, 3, 4, 5]"
+              name="star"
+              class="size-4 star-icon"
+              [ngClass]="{ 'is-filled': i <= row.scoreRating }"></lucide-icon>
+          </div>
+          <p class="score-summary__total">
+            Total: {{ row.totalScore !== null ? row.totalScore : 'N/A' }}
+          </p>
+        </div>
+        <div class="score-grid">
+          <div class="score-item">
+            <span>Industria</span>
+            <strong>{{ row.puntuacion_industria ?? 'N/A' }}</strong>
+          </div>
+          <div class="score-item">
+            <span>Tamano</span>
+            <strong>{{ row.puntuacion_tamano ?? 'N/A' }}</strong>
+          </div>
+          <div class="score-item">
+            <span>Ubicacion</span>
+            <strong>{{ row.puntuacion_ubicacion ?? 'N/A' }}</strong>
+          </div>
+          <div class="score-item">
+            <span>Fit digital</span>
+            <strong>{{ row.puntuacion_fit_digital ?? 'N/A' }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="analisisModalOpen() && selectedAnalisisRow() as row">
+  <div class="modal-backdrop" (click)="closeAnalisisDetails()">
+    <div class="modal-card modal-card--wide" (click)="$event.stopPropagation()">
+      <header class="modal-header">
+        <div>
+          <p class="modal-eyebrow">Analisis completo</p>
+          <h3 class="modal-title">{{ row.nombre_empresa || 'Sin empresa' }}</h3>
+        </div>
+        <button type="button" class="modal-close" (click)="closeAnalisisDetails()">&times;</button>
+      </header>
+      <div class="modal-body">
+        <div class="modal-section">
+          <h4>Puntos de dolor</h4>
+          <p *ngIf="row.painPoints.length; else noPainPointsDetail">
+            {{ row.painPoints.join(', ') }}
+          </p>
+          <ng-template #noPainPointsDetail>
+            <p class="text-muted">Sin registros</p>
+          </ng-template>
+        </div>
+        <div class="modal-section">
+          <h4>Analisis final</h4>
+          <p *ngIf="row.analisis_final; else noAnalisisDetail">{{ row.analisis_final }}</p>
+          <ng-template #noAnalisisDetail>
+            <p class="text-muted">Sin analisis</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

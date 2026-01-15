@@ -29,7 +29,7 @@
       <p>Datos base de la compania y enlaces principales.</p>
     </div>
 
-    <div class="form-grid">
+    <div class="form-grid form-grid--general">
       <div class="form-control">
         <label for="companyName">Nombre</label>
         <div class="input-wrapper">
@@ -52,14 +52,54 @@
         </div>
       </div>
 
-      <div class="form-control">
-        <label for="companySegment">Segmento</label>
-        <div class="input-wrapper">
-          <input
-            id="companySegment"
-            type="text"
-            placeholder="Automatizacion industrial"
-            formControlName="companySegment" />
+      <div class="form-control form-control--wide form-control--tall">
+        <label>Industria</label>
+        <div class="industry-picker industry-picker--compact">
+          <div class="industry-toolbar">
+            <div class="industry-search">
+              <input
+                type="search"
+                placeholder="Buscar sector, industria o tendencia..."
+                [value]="generalIndustrySearch()"
+                (input)="onGeneralIndustrySearch($event)" />
+            </div>
+            <div class="industry-selection">
+              <span>{{ getCompanyIndustryLabel() }}</span>
+              <button
+                type="button"
+                class="industry-clear"
+                (click)="clearCompanyIndustry()"
+                [disabled]="!form.get('companySegment')?.value">
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <div class="industry-list">
+            <div class="industry-row industry-row--header">
+              <span></span>
+              <span>Sector General</span>
+              <span>Industria Especifica</span>
+              <span>Tendencia 2026</span>
+            </div>
+
+            <ng-container *ngIf="filteredGeneralIndustries().length; else noCompanyIndustryResults">
+              <label class="industry-row" *ngFor="let option of filteredGeneralIndustries()">
+                <input
+                  type="radio"
+                  name="companyIndustry"
+                  [checked]="isCompanyIndustrySelected(option)"
+                  (change)="selectCompanyIndustry(option)" />
+                <span class="industry-sector">{{ option.sector }}</span>
+                <span class="industry-name">{{ option.industry }}</span>
+                <span class="industry-trend">{{ option.trend }}</span>
+              </label>
+            </ng-container>
+
+            <ng-template #noCompanyIndustryResults>
+              <div class="industry-empty">Sin resultados para la busqueda.</div>
+            </ng-template>
+          </div>
         </div>
       </div>
 
@@ -75,20 +115,20 @@
       </div>
 
       <div class="form-control">
+        <label for="creationDate">Fecha creacion</label>
+        <div class="input-wrapper">
+          <input id="creationDate" type="date" formControlName="creationDate" />
+        </div>
+      </div>
+
+      <div class="form-control form-control--wide">
         <label for="companyIcp">ICP / Comentarios</label>
         <div class="input-wrapper textarea">
           <textarea
             id="companyIcp"
-            rows="3"
+            rows="5"
             placeholder="Detalle del ICP o notas relevantes"
             formControlName="companyIcp"></textarea>
-        </div>
-      </div>
-
-      <div class="form-control">
-        <label for="creationDate">Fecha creacion</label>
-        <div class="input-wrapper">
-          <input id="creationDate" type="date" formControlName="creationDate" />
         </div>
       </div>
     </div>
@@ -101,16 +141,55 @@
     </div>
 
     <div class="form-grid">
-      <div class="form-control">
-        <label for="icpIndustries">Industrias Objetivo</label>
-        <div class="input-wrapper">
-          <select id="icpIndustries" multiple formControlName="icpIndustries">
-            <option *ngFor="let industry of industryOptions" [value]="industry">
-              {{ industry }}
-            </option>
-          </select>
+      <div class="form-control form-control--wide">
+        <label>Industrias Objetivo</label>
+        <div class="industry-picker">
+          <div class="industry-toolbar">
+            <div class="industry-search">
+              <input
+                type="search"
+                placeholder="Buscar sector, industria o tendencia..."
+                [value]="industrySearch()"
+                (input)="onIndustrySearch($event)" />
+            </div>
+            <span class="industry-count">{{ getSelectedIndustries().length }} seleccionadas</span>
+          </div>
+
+          <div class="industry-list">
+            <div class="industry-row industry-row--header">
+              <span></span>
+              <span>Sector General</span>
+              <span>Industria Especifica</span>
+              <span>Tendencia 2026</span>
+            </div>
+
+            <ng-container *ngIf="filteredIndustries().length; else noIndustryResults">
+              <label class="industry-row" *ngFor="let option of filteredIndustries()">
+                <input
+                  type="checkbox"
+                  [checked]="isIndustrySelected(option)"
+                  (change)="toggleIndustry(option, $event)" />
+                <span class="industry-sector">{{ option.sector }}</span>
+                <span class="industry-name">{{ option.industry }}</span>
+                <span class="industry-trend">{{ option.trend }}</span>
+              </label>
+            </ng-container>
+
+            <ng-template #noIndustryResults>
+              <div class="industry-empty">Sin resultados para la busqueda.</div>
+            </ng-template>
+          </div>
         </div>
-        <small class="helper-text">Mantener Ctrl (Cmd) para multiples opciones.</small>
+
+        <div class="tag-list" *ngIf="getSelectedIndustries().length">
+          <span class="tag-pill" *ngFor="let item of getSelectedIndustries()">
+            {{ getIndustryLabel(item) }}
+            <button type="button" class="tag-remove" (click)="removeIndustry(item)">
+              &times;
+            </button>
+          </span>
+        </div>
+        <small class="helper-text">Selecciona industrias con el checkbox.</small>
       </div>
 
       <div class="form-control form-control--wide">
@@ -278,11 +357,12 @@
       <div class="form-control">
         <label for="buyerPersonaCompanyType">Tipo de Empresa</label>
         <div class="input-wrapper">
-          <input
-            id="buyerPersonaCompanyType"
-            type="text"
-            placeholder="Empresa Mediana Tech"
-            formControlName="buyerPersonaCompanyType" />
+          <select id="buyerPersonaCompanyType" formControlName="buyerPersonaCompanyType">
+            <option value="">Selecciona un tipo</option>
+            <option *ngFor="let type of companyTypeOptions" [value]="type">
+              {{ type }}
+            </option>
+          </select>
         </div>
       </div>
 
